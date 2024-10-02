@@ -38,11 +38,15 @@ h1 {
     margin-bottom: 20px;
 }
 
+
 .informa-medica {
     background-color: #eafafc;
-    padding: 30px 20px;
+    padding-top: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 25px;
     border-radius: 5px;
-    margin-bottom: 40px;
+    
     font-weight: 600;
     max-width: 900px;
     width: calc(100% - 30px); /* Ajusta a largura para considerar as margens */
@@ -54,8 +58,138 @@ h1 {
     color: #17a7b8;
 }
 
+.div-800 {
+    background-color: #757474;;
+    padding: 20px;
+    border: #3ec7be;
+    margin: 15px;
+}
+
+.div-radio-800 {
+    background-color: #75747494;
+    padding: 20px;
+    border: #3ec7be;
+    margin: 15px;
+    
+    /* Seus estilos existentes */
+    cursor: pointer; /* Muda o cursor para indicar interatividade */
+    transition: background-color 0.2s ease-in-out; /* Transição suave */
+    padding: 10px; /* Espaçamento interno */
+    margin-bottom: 10px; /* Espaçamento entre as opções */
+}
+
+.div-radio-800:hover {
+   background-color: #3ec7be; /* Cor de fundo ao passar o mouse */
+}
+
+.div-radio-800.selected {
+    background-color: #1dd0e7; /* Cor especificada */
+}
+
+.div-radio-700 {
+    background-color: #75747494;
+    border-radius: 5px;
+    padding: 20px;
+    border: #3ec7be;
+    margin: 15px;
+    /* Seus estilos existentes */
+    cursor: pointer; /* Muda o cursor para indicar interatividade */
+    transition: background-color 0.2s ease-in-out; /* Transição suave */
+    padding: 10px; /* Espaçamento interno */
+    margin-bottom: 10px; /* Espaçamento entre as opções */
+}
+
+.div-radio-700:hover {
+ background-color: #3ec7be; /* Cor de fundo ao passar o mouse */
+}
+
+.div-radio-700.selected {
+  background-color: #1dd0e7; /* Cor especificada */
+}
+
+
+
+.tipos-exame {
+    background-color: #879bdd;
+    padding: 20px;
+    
+   
+    margin-bottom: 40px;
+    font-weight: 600;
+    max-width: 700px;
+    width: calc(100% - 30px);
+    color: #ffffff;
+    text-align: center;
+    margin: 0 15px;
+}
+
+.tipos-exame h2{
+    color: #ffffff;
+
+
+}
+
+.secao-descontos {
+    background-color: #eafafc;
+    padding-top: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 100px;
+    border-radius: 5px;
+    
+    font-weight: 600;
+    max-width: 900px;
+    width: calc(100% - 30px); /* Ajusta a largura para considerar as margens */
+    text-align: left;
+    margin: 0 15px; 
+}
+
+
+
+.link {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.btn_sim_nao_cupom {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Estilos para os botões */
+.btn_sim_nao_cupom button {
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.btn_sim_nao_cupom button:first-child {
+    margin-left: 0;
+}
+
+.btn_sim_nao_cupom button:last-child {
+    margin-right: 0;
+}
+
+/* Classe para elementos com transição */
+.elemento-transicao {
+    transition: opacity 0.5s ease, max-height 0.5s ease;
+    overflow: hidden;
+    opacity: 1;
+    max-height: 1000px; /* Valor suficientemente grande para acomodar o conteúdo */
+}
+
+/* Elementos inicialmente ocultos */
+.oculto {
+    opacity: 0;
+    max-height: 0;
+}
+
 .price-info {
-    background-color: #4b67c3;
+    background-color: #879bdd;
+    
     padding: 20px;
     border-radius: 5px;
     margin-bottom: 40px;
@@ -100,7 +234,10 @@ textarea {
     border: 1px solid #1dd0e7;
     border-radius: 5px;
     font-size: 1rem;
+    
 }
+
+
 
 button {
     width: 100%;
@@ -137,12 +274,13 @@ button:hover {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
-    color: #1dd0e7;
+    color: #ffffff;
 }
 
 .radio-group label {
     display: flex;
     align-items: center;
+    color: #ffffff;
 }
 
 .radio-group input[type="radio"] {
