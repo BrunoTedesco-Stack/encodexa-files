@@ -552,12 +552,25 @@ document.querySelectorAll('input[name="tipo-exame"]').forEach((radio) => {
 // Evento ao clicar no botão de validar cupom
 document.getElementById('validar-cupom-btn').addEventListener('click', async () => {
     const codigoDesconto = document.getElementById('codigo-desconto').value.trim();
+    const priceInfoDiv = document.querySelector('.price-info');
+    const termsDiv = document.querySelector('.terms');
+     // Função para ocultar um elemento
+     function hideElement(element) {
+        element.style.display = 'none';
+    }
+
+    // Função para exibir um elemento
+    function showElement(element) {
+        element.style.display = 'block';
+    }
 
     if (codigoDesconto) {
         const percentual = await validarCupom(codigoDesconto);
         if (percentual !== null) {
             aplicarDesconto(percentual);
             alert(`Cupom de ${percentual}% aplicado com sucesso!`);
+            showElement(priceInfoDiv);
+            showElement(termsDiv);
         } else {
             alert('Cupom inválido.');
         }
@@ -841,6 +854,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const labelNaoPossuoCupom = document.getElementById('nao-possuo-cupom');
     const secaoDescontosDiv = document.getElementById('secao-descontos');
     const priceInfoDiv = document.querySelector('.price-info');
+    const termosaceite = document.querySelector('.terms');
 
     // Função para ocultar um elemento
     function hideElement(element) {
@@ -859,9 +873,14 @@ document.addEventListener('DOMContentLoaded', () => {
       
         // Mostrar a seção de descontos
         showElement(secaoDescontosDiv);
-        hideElement(campoDesconto);
+       // hideElement(campoDesconto);
         showElement(labelNaoPossuoCupom);
+        showElement(termosaceite);
         // Exibir a div "price-info"
         showElement(priceInfoDiv);
+
+
+
+
     });
 });
