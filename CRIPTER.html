@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criptografia com Chave</title>
+    <script>
+        // Função simples para criptografar usando XOR com base em uma chave
+        function encrypt(text, key) {
+            let result = "";
+            for (let i = 0; i < text.length; i++) {
+                // Criptografando cada caractere usando XOR com base no código da chave
+                result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+            }
+            return result;
+        }
+
+        // Função para criptografar a string
+        function encryptText() {
+            const text = document.getElementById("textToEncrypt").value;
+            const key = document.getElementById("encryptionKey").value;
+            const encrypted = encrypt(text, key);
+            document.getElementById("encryptedText").value = btoa(encrypted); // Convertendo para Base64
+        }
+
+        // Função para descriptografar a string
+        function decryptText() {
+            const encryptedText = atob(document.getElementById("encryptedText").value); // Convertendo de Base64
+            const key = document.getElementById("encryptionKey").value;
+            const decrypted = encrypt(encryptedText, key); // A mesma função pode ser usada para descriptografar
+            document.getElementById("decryptedText").value = decrypted;
+        }
+    </script>
+</head>
+<body>
+
+    <h1>Criptografia Simples com Chave</h1>
+
+    <label for="textToEncrypt">Texto para criptografar:</label><br>
+    <input type="text" id="textToEncrypt" placeholder="Digite o texto" size="50"><br><br>
+
+    <label for="encryptionKey">Chave de criptografia:</label><br>
+    <input type="text" id="encryptionKey" placeholder="Digite a chave" size="50"><br><br>
+
+    <button onclick="encryptText()">Criptografar</button><br><br>
+
+    <label for="encryptedText">Texto criptografado (Base64):</label><br>
+    <input type="text" id="encryptedText" readonly size="50"><br><br>
+
+    <button onclick="decryptText()">Descriptografar</button><br><br>
+
+    <label for="decryptedText">Texto descriptografado:</label><br>
+    <input type="text" id="decryptedText" readonly size="50"><br><br>
+
+</body>
+</html>

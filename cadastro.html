@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Médicos e Códigos de Validação</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <style>
+        .desconto-field {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cadastrar Médico Manualmente</h1>
+    <form id="form-medico">
+        <!-- Dados do médico -->
+        <label for="crm-medico">CRM:</label>
+        <input type="text" id="crm-medico" placeholder="Digite o CRM do médico" required><br>
+
+        <label for="nome-medico">Nome:</label>
+        <input type="text" id="nome-medico" placeholder="Digite o nome do médico" required><br>
+
+        <label for="sexo-medico">Sexo:</label>
+        <select id="sexo-medico" required>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+            <option value="Outro">Outro</option>
+        </select><br>
+
+        <label for="email-medico">Email:</label>
+        <input type="email" id="email-medico" placeholder="Digite o email do médico" required><br>
+
+        <label for="telefone-medico">Telefone:</label>
+        <input type="text" id="telefone-medico" placeholder="Digite o telefone do médico" required><br>
+
+        <label for="cep-medico">CEP:</label>
+        <input type="text" id="cep-medico" placeholder="Digite o CEP do médico" required><br>
+
+        <label for="rua-medico">Rua:</label>
+        <input type="text" id="rua-medico" placeholder="Digite a rua do médico" required><br>
+
+        <label for="numero-medico">Número:</label>
+        <input type="text" id="numero-medico" placeholder="Digite o número" required><br>
+
+        <label for="complemento-medico">Complemento:</label>
+        <input type="text" id="complemento-medico" placeholder="Digite o complemento"><br>
+
+        <label for="bairro-medico">Bairro:</label>
+        <input type="text" id="bairro-medico" placeholder="Digite o bairro" required><br>
+
+        <label for="cidade-medico">Cidade:</label>
+        <input type="text" id="cidade-medico" placeholder="Digite a cidade" required><br>
+
+        <label for="estado-medico">Estado:</label>
+        <input type="text" id="estado-medico" placeholder="Digite o estado" required><br>
+
+        <!-- Campo para códigos de desconto e porcentagem -->
+        <h2>Códigos de Desconto</h2>
+        <div id="descontos-container">
+            <div class="desconto-field">
+                <label for="codigo-desconto">Código de Desconto:</label>
+                <input type="text" class="codigo-desconto" placeholder="Digite o código de desconto">
+                <label for="porcentagem-desconto">Porcentagem:</label>
+                <input type="number" class="porcentagem-desconto" placeholder="Digite a porcentagem" min="0" max="100">
+                <button type="button" onclick="adicionarCampoDesconto()">+</button>
+            </div>
+        </div>
+
+        <!-- Checkbox para código de desconto automático ou manual -->
+        <input type="checkbox" id="codigo-desconto-automatico">
+        <label for="codigo-desconto-automatico">Gerar códigos de desconto automaticamente</label><br>
+
+        <!-- Campo para códigos de ativação -->
+        <h2>Códigos de Ativação</h2>
+        <input type="text" id="codigos-ativacao" placeholder="Digite os códigos de ativação (separados por vírgula)"><br>
+        <input type="checkbox" id="codigo-ativacao-automatico">
+        <label for="codigo-ativacao-automatico">Gerar 10 códigos de ativação automaticamente</label><br>
+
+        <button type="submit">Cadastrar Médico</button>
+    </form>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5RpiWnBRLplw7IxoSTYJh9AMidFHXpVM",
+            authDomain: "encodexa.firebaseapp.com",
+            databaseURL: "https://encodexa-default-rtdb.firebaseio.com",
+            projectId: "encodexa",
+            storageBucket: "encodexa.appspot.com",
+            messagingSenderId: "575353833546",
+            appId: "1:575353833546:web:00e0f11b788ab801eebeb3"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Função para gerar o ID do médico no formato MED_ID_0000000
+        function gerarMedicoId() {
+            var idNumerico = Math.floor(Math.random() * 10000000).toString().padStart(7, '0');
+            return 'MED_ID_' + idNumerico;
+        }
+
+        // Função para adicionar um novo campo de código de desconto e porcentagem
+        function adicionarCampoDesconto() {
+            const descontosContainer = document.getElementById('descontos-container');
+            const newField = document.createElement('div');
+            newField.classList.add('desconto-field');
+            newField.innerHTML = `
+                <label for="codigo-desconto">Código de Desconto:</label>
+                <input type="text" class="codigo-desconto" placeholder="Digite o código de desconto">
+                <label for="porcentagem-desconto">Porcentagem:</label>
+                <input type="number" class="porcentagem-desconto" placeholder="Digite a porcentagem" min="0" max="100">
+                <button type="button" onclick="adicionarCampoDesconto()">+</button>
+            `;
+            descontosContainer.appendChild(newField);
+        }
+
+        // Função para gerar cupons de desconto automaticamente
+        function gerarCuponsDesconto() {
+            const prefixos = [
+                { percent: '5%', prefix: 'PROMO5%OFF' },
+                { percent: '10%', prefix: 'PROMO10%OFF' },
+                { percent: '15%', prefix: 'PROMO15%OFF' },
+                { percent: '20%', prefix: 'PROMO20%OFF' },
+                { percent: '25%', prefix: 'PROMO25%OFF' },
+                { percent: '30%', prefix: 'PROMO30%OFF' },
+                { percent: '100%', prefix: 'PROMO100%OFF' }
+            ];
+
+            return prefixos.map(item => {
+                const numeroAleatorio = Math.floor(Math.random() * 1000000).toString().padStart(7, '0');
+                return {
+                    codigo: `${item.prefix}${numeroAleatorio}`,
+                    percentual: item.percent
+                };
+            });
+        }
+
+        // Função para verificar se os códigos de ativação já existem
+        function verificarCodigosExistentes(codigos, callback) {
+            var codigosArray = codigos.split(',').map(c => c.trim());
+            var codigosExistentes = [];
+
+            var promises = codigosArray.map(codigo => {
+                return database.ref('codigos_ativacao/disponiveis/' + codigo).once('value').then(snapshot => {
+                    if (snapshot.exists()) {
+                        codigosExistentes.push(codigo);
+                    }
+                });
+            });
+
+            Promise.all(promises).then(() => {
+                callback(codigosExistentes);
+            });
+        }
+
+       // Função para gravar os códigos de ativação no Firebase
+function gravarCodigosAtivacao(codigos, medicoId) {
+    var codigosArray = codigos.split(',').map(c => c.trim());
+
+    // Objeto para armazenar os códigos de ativação dentro do médico
+    var codigosAtivacaoMedico = {};
+
+    codigosArray.forEach((codigo, index) => {
+        // Grava o código de ativação no nó global
+        database.ref('codigos_ativacao/disponiveis/' + codigo).set({
+            medico_id: medicoId // Usa o mesmo ID único do médico para todos os códigos
+        }).then(() => {
+            console.log('Código ' + codigo + ' gravado com sucesso no nó global.');
+        }).catch(error => {
+            console.error('Erro ao gravar o código no nó global: ' + error.message);
+        });
+
+        // Adiciona o código ao objeto de códigos do médico
+        codigosAtivacaoMedico[index] = codigo;
+    });
+
+    // Grava os códigos de ativação diretamente no ID do médico
+    database.ref('medicos/' + medicoId + '/codigos_ativacao').set(codigosAtivacaoMedico)
+        .then(() => {
+            console.log('Códigos de ativação gravados com sucesso no ID do médico.');
+        })
+        .catch(error => {
+            console.error('Erro ao gravar os códigos no ID do médico: ' + error.message);
+        });
+}
+
+        // Função para gravar cupons de desconto no Firebase
+        function gravarCuponsDesconto(medicoId, cuponsDesconto) {
+            const codigoDescontoObj = {};
+
+            cuponsDesconto.forEach((cupom, index) => {
+                codigoDescontoObj[index] = {
+                    codigo: cupom.codigo,
+                    percentual: cupom.percentual
+                };
+            });
+
+            // Grava os cupons de desconto no Firebase para o médico
+            database.ref('medicos/' + medicoId + '/codigo_desconto').set(codigoDescontoObj)
+                .then(() => {
+                    console.log('Cupons de desconto gravados com sucesso.');
+                })
+                .catch(error => {
+                    console.error('Erro ao gravar os cupons de desconto: ' + error.message);
+                });
+        }
+
+        // Função para cadastrar médico manualmente com cupons e códigos automáticos
+        document.getElementById('form-medico').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var nomeMedico = document.getElementById('nome-medico').value;
+            var crmMedico = document.getElementById('crm-medico').value;
+            var sexoMedico = document.getElementById('sexo-medico').value;
+            var emailMedico = document.getElementById('email-medico').value;
+            var telefoneMedico = document.getElementById('telefone-medico').value;
+            var cepMedico = document.getElementById('cep-medico').value;
+            var ruaMedico = document.getElementById('rua-medico').value;
+            var numeroMedico = document.getElementById('numero-medico').value;
+            var complementoMedico = document.getElementById('complemento-medico').value;
+            var bairroMedico = document.getElementById('bairro-medico').value;
+            var cidadeMedico = document.getElementById('cidade-medico').value;
+            var estadoMedico = document.getElementById('estado-medico').value;
+
+            var medicoId = gerarMedicoId(); // ID único para o médico
+            var codigosAtivacao = document.getElementById('codigos-ativacao').value;
+            var gerarCodigosAtivacaoAutomaticamente = document.getElementById('codigo-ativacao-automatico').checked;
+            var gerarCodigosDescontoAutomaticamente = document.getElementById('codigo-desconto-automatico').checked;
+
+            // Criar objeto do médico
+            var novoMedico = {
+                crm: crmMedico,
+                nome: nomeMedico,
+                sexo: sexoMedico,
+                email: emailMedico,
+                telefone: telefoneMedico,
+                cep: cepMedico,
+                rua: ruaMedico,
+                numero: numeroMedico,
+                complemento: complementoMedico,
+                bairro: bairroMedico,
+                cidade: cidadeMedico,
+                estado: estadoMedico,
+            };
+
+            // Verificar e gravar códigos de ativação
+            if (gerarCodigosAtivacaoAutomaticamente) {
+                // Gerar 10 códigos de ativação automaticamente
+                var codigosGerados = [];
+                for (let i = 0; i < 10; i++) {
+                    let novoCodigo = 'EX' + Math.floor(Math.random() * 1000000).toString().padStart(7, '0');
+                    codigosGerados.push(novoCodigo);
+                }
+                codigosAtivacao = codigosGerados.join(',');
+            }
+
+            verificarCodigosExistentes(codigosAtivacao, function(codigosExistentes) {
+                if (codigosExistentes.length > 0) {
+                    alert('Os seguintes códigos de ativação já existem e não serão gravados: ' + codigosExistentes.join(', '));
+                    return;
+                }
+
+                // Gravar o médico no Firebase
+                database.ref('medicos/' + medicoId).set(novoMedico)
+                    .then(() => {
+                        alert('Médico cadastrado com sucesso!');
+                        document.getElementById('form-medico').reset();
+                        gravarCodigosAtivacao(codigosAtivacao, medicoId); // Gravar os códigos de ativação
+
+                        // Verificar se os cupons de desconto serão gerados automaticamente ou manualmente
+                        if (gerarCodigosDescontoAutomaticamente) {
+                            const cuponsDesconto = gerarCuponsDesconto(); // Gera os cupons automáticos
+                            gravarCuponsDesconto(medicoId, cuponsDesconto);
+                        } else {
+                            // Gravar os cupons de desconto manuais
+                            const cuponsManuais = [];
+                            const camposDesconto = document.querySelectorAll('.desconto-field');
+                            camposDesconto.forEach(campo => {
+                                const codigoDesconto = campo.querySelector('.codigo-desconto').value;
+                                const porcentagemDesconto = campo.querySelector('.porcentagem-desconto').value;
+                                if (codigoDesconto && porcentagemDesconto) {
+                                    cuponsManuais.push({ codigo: codigoDesconto, percentual: porcentagemDesconto + '%' });
+                                }
+                            });
+                            gravarCuponsDesconto(medicoId, cuponsManuais);
+                        }
+                    })
+                    .catch((error) => {
+                        alert('Erro ao cadastrar o médico: ' + error.message);
+                    });
+            });
+        });
+
+    </script>
+</body>
+</html>

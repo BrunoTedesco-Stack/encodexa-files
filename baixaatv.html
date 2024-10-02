@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Códigos de Ativação</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+</head>
+<body>
+    <h1>Utilizar Código de Ativação</h1>
+    <form id="form-utilizar-codigo">
+        <label for="codigo-ativacao">Código de Ativação:</label>
+        <input type="text" id="codigo-ativacao" placeholder="Digite o código de ativação" required>
+        <br>
+        <button type="submit">Utilizar Código</button>
+    </form>
+
+    <h1>Consultar Código de Ativação</h1>
+    <form id="form-consultar-codigo">
+        <label for="consulta-codigo-ativacao">Consultar Código de Ativação:</label>
+        <input type="text" id="consulta-codigo-ativacao" placeholder="Digite o código de ativação para consultar" required>
+        <br>
+        <button type="submit">Consultar Código</button>
+    </form>
+
+    <div id="resultado-consulta"></div>
+
+    <h1>Inutilizar Código de Ativação</h1>
+    <form id="form-inutilizar-codigo">
+        <label for="codigo-inutilizar">Código de Ativação:</label>
+        <input type="text" id="codigo-inutilizar" placeholder="Digite o código de ativação para inutilizar" required>
+        <br>
+        <button type="submit">Inutilizar Código</button>
+    </form>
+
+    <h1>Incluir Novo Código de Ativação</h1>
+    <form id="form-incluir-codigo">
+        <label for="novo-codigo-ativacao">Novo Código de Ativação:</label>
+        <input type="text" id="novo-codigo-ativacao" placeholder="Digite o novo código de ativação" required>
+        <br>
+        <label for="medico-select">Selecione o Médico:</label>
+        <select id="medico-select">
+            <!-- Médicos serão carregados dinamicamente -->
+        </select>
+        <br>
+        <button type="button" onclick="gerarCodigoAtivacaoUnicoNoInput()">Gerar Código</button>
+        <button type="submit">Incluir Código</button>
+    </form>
+
+    <h1>Listar Códigos de Ativação por Médico</h1>
+    <form id="form-listar-codigos">
+        <label for="medico-listar-select">Selecione o Médico:</label>
+        <select id="medico-listar-select">
+            <!-- Médicos serão carregados dinamicamente -->
+        </select>
+        <br>
+        <button type="submit">Listar Códigos</button>
+    </form>
+
+    <div id="resultado-lista-codigos"></div>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5RpiWnBRLplw7IxoSTYJh9AMidFHXpVM",
+            authDomain: "encodexa.firebaseapp.com",
+            databaseURL: "https://encodexa-default-rtdb.firebaseio.com",
+            projectId: "encodexa",
+            storageBucket: "encodexa.appspot.com",
+            messagingSenderId: "575353833546",
+            appId: "1:575353833546:web:00e0f11b788ab801eebeb3"
+        };
+
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Carregar lista de médicos no dropdown
+        function carregarMedicosDropdown(selectId) {
+            const medicoSelect = document.getElementById(selectId);
+            medicoSelect.innerHTML = '<option value="">Selecione um Médico</option>';
+
+            database.ref('medicos').once('value').then(snapshot => {
+                snapshot.forEach(childSnapshot => {
+                    const medico = childSnapshot.val();
+                    const option = document.createElement('option');
+                    option.value = childSnapshot.key;
+                    option.textContent = medico.nome + " (CRM: " + medico.crm + ")";
+                    medicoSelect.appendChild(option);
+                });
+            });
+        }
+
+        // Função para utilizar o código de ativação
+     // Função para utilizar o código de ativação
+function utilizarCodigoAtivacao(codigoAtivacao) {
+    const codigoRef = database.ref('codigos_ativacao/disponiveis/' + codigoAtivacao);
+
+    // Verifica se o código está em "disponíveis"
+    codigoRef.once('value').then(snapshot => {
+        if (snapshot.exists()) {
+            const medicoId = snapshot.val().medico_id;
+            const exameId = gerarExameId(); // Gera um ID único para o exame
+
+            // Move o código para "indisponíveis" e adiciona o ID do exame
+            const codigoIndisponivelRef = database.ref('codigos_ativacao/indisponiveis/' + codigoAtivacao);
+            codigoIndisponivelRef.set({
+                medico_id: medicoId,
+                exame_id: exameId
+            }).then(() => {
+                // Remove o código de "disponíveis"
+                codigoRef.remove();
+
+                // Atualiza o médico, marcando o código como "indisponível" e adicionando o ID do exame
+                const medicoRef = database.ref('medicos/' + medicoId);
+                medicoRef.once('value').then(medicoSnapshot => {
+                    if (medicoSnapshot.exists()) {
+                        let medicoData = medicoSnapshot.val();
+                        let codigosAtivacao = medicoData.codigos_ativacao || [];
+
+                        // Marca o código como indisponível no array de códigos de ativação e adiciona o exame ID
+                        codigosAtivacao = codigosAtivacao.map(codigo => {
+                            if (codigo === codigoAtivacao) {
+                                return `${codigo} (indisponível - Exame: ${exameId})`;
+                            }
+                            return codigo;
+                        });
+
+                        // Atualiza o médico com os códigos atualizados
+                        medicoRef.update({
+                            codigos_ativacao: codigosAtivacao
+                        }).then(() => {
+                            alert('Código de ativação utilizado com sucesso e médico atualizado.');
+                        });
+                    } else {
+                        alert('Médico não encontrado.');
+                    }
+                });
+            });
+        } else {
+            alert('Código de ativação não encontrado em "disponíveis".');
+        }
+    });
+}
+
+// Função para gerar o ID do exame no formato EX_ID_0000000
+function gerarExameId() {
+    var idNumerico = Math.floor(Math.random() * 10000000).toString().padStart(7, '0');
+    return 'EX_ID_' + idNumerico;
+}
+
+
+// Função para consultar o código de ativação e mostrar os detalhes do médico e do exame
+function consultarCodigoAtivacao(codigoAtivacao) {
+    const codigoDisponivelRef = database.ref('codigos_ativacao/disponiveis/' + codigoAtivacao);
+    const codigoIndisponivelRef = database.ref('codigos_ativacao/indisponiveis/' + codigoAtivacao);
+
+    let resultadoDiv = document.getElementById('resultado-consulta');
+    resultadoDiv.innerHTML = ''; // Limpa o resultado anterior
+
+    // Verifica se o código está em "disponíveis"
+    codigoDisponivelRef.once('value').then(snapshot => {
+        if (snapshot.exists()) {
+            const medicoId = snapshot.val().medico_id;
+            mostrarDetalhesMedico(medicoId, `Código disponível para uso. Médico ID: ${medicoId}`);
+        } else {
+            // Se não estiver em disponíveis, verifica em indisponíveis
+            codigoIndisponivelRef.once('value').then(snapshot => {
+                if (snapshot.exists()) {
+                    const medicoId = snapshot.val().medico_id;
+                    const exameId = snapshot.val().exame_id;
+                    mostrarDetalhesMedico(medicoId, `Código já utilizado. Exame ID: ${exameId}, Médico ID: ${medicoId}`);
+                } else {
+                    resultadoDiv.innerHTML = 'Código de ativação não encontrado.';
+                }
+            });
+        }
+    });
+}
+
+// Função para mostrar os detalhes do médico
+function mostrarDetalhesMedico(medicoId, mensagemInicial) {
+    const medicoRef = database.ref('medicos/' + medicoId);
+    let resultadoDiv = document.getElementById('resultado-consulta');
+
+    medicoRef.once('value').then(medicoSnapshot => {
+        if (medicoSnapshot.exists()) {
+            let medicoData = medicoSnapshot.val();
+            resultadoDiv.innerHTML = `
+                ${mensagemInicial}<br>
+                Nome do Médico: ${medicoData.nome}<br>
+                CRM: ${medicoData.crm}<br>
+                Códigos de Ativação: ${medicoData.codigos_ativacao.join(', ')}
+            `;
+        } else {
+            resultadoDiv.innerHTML = 'Médico não encontrado.';
+        }
+    });
+}
+
+
+
+    // Função para inutilizar o código de ativação
+function inutilizarCodigoAtivacao(codigoAtivacao) {
+    const codigoRef = database.ref('codigos_ativacao/disponiveis/' + codigoAtivacao);
+    const codigoInutilizadoRef = database.ref('codigos_ativacao/inutilizados/' + codigoAtivacao);
+
+    // Verifica se o código está em "disponíveis"
+    codigoRef.once('value').then(snapshot => {
+        if (snapshot.exists()) {
+            const medicoId = snapshot.val().medico_id;
+
+            // Move o código para "inutilizados"
+            codigoInutilizadoRef.set({
+                medico_id: medicoId,
+                status: 'inutilizado'
+            }).then(() => {
+                // Remove o código de "disponíveis"
+                codigoRef.remove();
+
+                // Atualiza o médico, marcando o código como "inutilizado"
+                const medicoRef = database.ref('medicos/' + medicoId);
+                medicoRef.once('value').then(medicoSnapshot => {
+                    if (medicoSnapshot.exists()) {
+                        let medicoData = medicoSnapshot.val();
+                        let codigosAtivacao = medicoData.codigos_ativacao || [];
+
+                        // Marca o código como "inutilizado" no array de códigos de ativação
+                        codigosAtivacao = codigosAtivacao.map(codigo => {
+                            if (codigo === codigoAtivacao) {
+                                return `${codigo} (inutilizado)`;
+                            }
+                            return codigo;
+                        });
+
+                        // Atualiza o médico com os códigos atualizados
+                        medicoRef.update({
+                            codigos_ativacao: codigosAtivacao
+                        }).then(() => {
+                            alert('Código de ativação inutilizado com sucesso.');
+                        });
+                    } else {
+                        alert('Médico não encontrado.');
+                    }
+                });
+            });
+        } else {
+            alert('Código de ativação não encontrado em "disponíveis".');
+        }
+    });
+}
+
+
+// Função para gerar um código único de ativação e exibir no input
+function gerarCodigoAtivacaoUnicoNoInput() {
+    gerarCodigoAtivacaoUnico(function(codigoAtivacao) {
+        document.getElementById('novo-codigo-ativacao').value = codigoAtivacao;  // Exibe o código no input
+    });
+}
+
+// Função para gerar o código de ativação no formato EX1000000
+function gerarCodigoAtivacao() {
+    const prefixo = 'EX';
+    const numero = Math.floor(Math.random() * 1000000).toString().padStart(7, '0');
+    return prefixo + numero;
+}
+
+// Função para verificar se o código de ativação é único
+function verificarCodigoUnico(codigoAtivacao, callback) {
+    const promises = [];
+
+    // Verifica nas chaves "disponíveis", "indisponíveis" e "inutilizados"
+    promises.push(database.ref('codigos_ativacao/disponiveis/' + codigoAtivacao).once('value'));
+    promises.push(database.ref('codigos_ativacao/indisponiveis/' + codigoAtivacao).once('value'));
+    promises.push(database.ref('codigos_ativacao/inutilizados/' + codigoAtivacao).once('value'));
+
+    // Resolve todas as promessas
+    Promise.all(promises).then(results => {
+        let isUnique = true;
+
+        // Verifica se o código já existe em alguma das chaves
+        results.forEach(snapshot => {
+            if (snapshot.exists()) {
+                isUnique = false;
+            }
+        });
+
+        // Chama o callback com o resultado
+        callback(isUnique);
+    });
+}
+
+// Função para gerar um código único de ativação
+function gerarCodigoAtivacaoUnico(callback) {
+    let codigoAtivacao = gerarCodigoAtivacao();
+
+    // Verifica se o código gerado é único
+    verificarCodigoUnico(codigoAtivacao, function(isUnique) {
+        if (isUnique) {
+            callback(codigoAtivacao);  // Código é único, retorna o código gerado
+        } else {
+            // Se o código já existir, gera um novo código até encontrar um único
+            gerarCodigoAtivacaoUnico(callback);
+        }
+    });
+}
+
+        // Função para incluir novo código de ativação
+        function incluirCodigoAtivacao(codigoAtivacao, medicoId) {
+            const novoCodigoRef = database.ref('codigos_ativacao/disponiveis/' + codigoAtivacao);
+
+            // Verifica se o código já existe
+            novoCodigoRef.once('value').then(snapshot => {
+                if (snapshot.exists()) {
+                    alert('O código de ativação já existe.');
+                } else {
+                    // Adiciona o novo código ao médico e na chave "disponíveis"
+                    novoCodigoRef.set({
+                        medico_id: medicoId
+                    }).then(() => {
+                        // Atualizar os códigos do médico
+                        const medicoRef = database.ref('medicos/' + medicoId);
+                        medicoRef.once('value').then(medicoSnapshot => {
+                            if (medicoSnapshot.exists()) {
+                                const medicoData = medicoSnapshot.val();
+                                const codigosAtivacao = medicoData.codigos_ativacao || [];
+                                codigosAtivacao.push(codigoAtivacao);
+
+                                medicoRef.update({
+                                    codigos_ativacao: codigosAtivacao
+                                }).then(() => {
+                                    alert('Código de ativação incluído com sucesso.');
+                                });
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
+        // Função para listar códigos de ativação de um médico
+        function listarCodigosMedico(medicoId) {
+            const medicoRef = database.ref('medicos/' + medicoId);
+            const resultadoDiv = document.getElementById('resultado-lista-codigos');
+            resultadoDiv.innerHTML = ''; // Limpa o resultado anterior
+
+            medicoRef.once('value').then(snapshot => {
+                if (snapshot.exists()) {
+                    const medicoData = snapshot.val();
+                    const codigosAtivacao = medicoData.codigos_ativacao || [];
+                    resultadoDiv.innerHTML = 'Códigos de Ativação:<br>' + codigosAtivacao.join(', ');
+
+                    // Adiciona informações dos exames realizados
+                    codigosAtivacao.forEach(codigo => {
+                        const codigoRef = database.ref('codigos_ativacao/indisponiveis/' + codigo);
+                        codigoRef.once('value').then(codigoSnapshot => {
+                            if (codigoSnapshot.exists()) {
+                                const exameId = codigoSnapshot.val().exame_id;
+                                resultadoDiv.innerHTML += `<br>Código: ${codigo} - Exame: ${exameId}`;
+                            }
+                        });
+                    });
+                } else {
+                    resultadoDiv.innerHTML = 'Nenhum código de ativação encontrado para o médico selecionado.';
+                }
+            });
+        }
+
+        // Carregar os médicos no dropdown ao carregar a página
+        window.onload = function() {
+            carregarMedicosDropdown('medico-select');
+            carregarMedicosDropdown('medico-listar-select');
+        };
+
+        // Listener para o formulário de utilização de código
+        document.getElementById('form-utilizar-codigo').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const codigoAtivacao = document.getElementById('codigo-ativacao').value.trim();
+            if (codigoAtivacao) {
+                utilizarCodigoAtivacao(codigoAtivacao);
+            }
+        });
+
+        // Listener para o formulário de consulta de código
+        document.getElementById('form-consultar-codigo').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const codigoAtivacao = document.getElementById('consulta-codigo-ativacao').value.trim();
+            if (codigoAtivacao) {
+                consultarCodigoAtivacao(codigoAtivacao);
+            }
+        });
+
+        // Listener para o formulário de inutilização de código
+        document.getElementById('form-inutilizar-codigo').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const codigoAtivacao = document.getElementById('codigo-inutilizar').value.trim();
+            if (codigoAtivacao) {
+                inutilizarCodigoAtivacao(codigoAtivacao);
+            }
+        });
+
+        // Listener para o formulário de inclusão de código
+        document.getElementById('form-incluir-codigo').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const codigoAtivacao = document.getElementById('novo-codigo-ativacao').value.trim();
+            const medicoId = document.getElementById('medico-select').value;
+            if (codigoAtivacao && medicoId) {
+                incluirCodigoAtivacao(codigoAtivacao, medicoId);
+            }
+        });
+
+        // Listener para o formulário de listar códigos
+        document.getElementById('form-listar-codigos').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const medicoId = document.getElementById('medico-listar-select').value;
+            if (medicoId) {
+                listarCodigosMedico(medicoId);
+            }
+        });
+    </script>
+</body>
+</html>
