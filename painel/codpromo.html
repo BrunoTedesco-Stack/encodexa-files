@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Códigos de Desconto</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+</head>
+<body>
+    <h1>Utilizar Código de Desconto</h1>
+    <form id="form-utilizar-codigo-desconto">
+        <label for="codigo-desconto">Código de Desconto:</label>
+        <input type="text" id="codigo-desconto" placeholder="Digite o código de desconto" required>
+        <br>
+        <button type="submit">Utilizar Código</button>
+    </form>
+
+    <h1>Consultar Código de Desconto</h1>
+    <form id="form-consultar-codigo-desconto">
+        <label for="consulta-codigo-desconto">Consultar Código de Desconto:</label>
+        <input type="text" id="consulta-codigo-desconto" placeholder="Digite o código de desconto para consultar" required>
+        <br>
+        <button type="submit">Consultar Código</button>
+    </form>
+
+    <div id="resultado-consulta-desconto"></div>
+
+    <h1>Incluir Novo Código de Desconto</h1>
+    <form id="form-incluir-codigo-desconto">
+        <label for="novo-codigo-desconto">Novo Código de Desconto:</label>
+        <input type="text" id="novo-codigo-desconto" placeholder="Digite o novo código de desconto" required>
+        <br>
+        <label for="medico-select-desconto">Selecione o Médico:</label>
+        <select id="medico-select-desconto">
+            <!-- Médicos serão carregados dinamicamente -->
+        </select>
+        <br>
+        <button type="button" onclick="gerarCodigoDescontoUnicoNoInput()">Gerar Código</button>
+        <button type="submit">Incluir Código</button>
+    </form>
+
+    <h1>Listar Códigos de Desconto por Médico</h1>
+    <form id="form-listar-codigos-desconto">
+        <label for="medico-listar-select-desconto">Selecione o Médico:</label>
+        <select id="medico-listar-select-desconto">
+            <!-- Médicos serão carregados dinamicamente -->
+        </select>
+        <br>
+        <button type="submit">Listar Códigos</button>
+    </form>
+
+    <div id="resultado-lista-codigos-desconto"></div>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5RpiWnBRLplw7IxoSTYJh9AMidFHXpVM",
+            authDomain: "encodexa.firebaseapp.com",
+            databaseURL: "https://encodexa-default-rtdb.firebaseio.com",
+            projectId: "encodexa",
+            storageBucket: "encodexa.appspot.com",
+            messagingSenderId: "575353833546",
+            appId: "1:575353833546:web:00e0f11b788ab801eebeb3"
+        };
+
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Carregar lista de médicos no dropdown
+        function carregarMedicosDropdownDesconto(selectId) {
+            const medicoSelect = document.getElementById(selectId);
+            medicoSelect.innerHTML = '<option value="">Selecione um Médico</option>';
+
+            database.ref('medicos').once('value').then(snapshot => {
+                snapshot.forEach(childSnapshot => {
+                    const medico = childSnapshot.val();
+                    const option = document.createElement('option');
+                    option.value = childSnapshot.key;
+                    option.textContent = medico.nome + " (CRM: " + medico.crm + ")";
+                    medicoSelect.appendChild(option);
+                });
+            });
+        }
+
+        // Função para utilizar o código de desconto
+        function utilizarCodigoDesconto(codigoDesconto) {
+            const medicoRef = database.ref('medicos');
+
+            medicoRef.once('value').then(snapshot => {
+                let codigoEncontrado = false;
+
+                snapshot.forEach(childSnapshot => {
+                    const medicoData = childSnapshot.val();
+                    const codigosDesconto = medicoData.codigo_desconto || [];
+
+                    if (codigosDesconto.includes(codigoDesconto)) {
+                        alert(`Código de Desconto utilizado com sucesso. Médico: ${medicoData.nome}`);
+                        codigoEncontrado = true;
+                    }
+                });
+
+                if (!codigoEncontrado) {
+                    alert('Código de Desconto não encontrado.');
+                }
+            });
+        }
+
+        // Função para consultar o código de desconto
+        function consultarCodigoDesconto(codigoDesconto) {
+            const medicoRef = database.ref('medicos');
+            let resultadoDiv = document.getElementById('resultado-consulta-desconto');
+            resultadoDiv.innerHTML = ''; // Limpa o resultado anterior
+
+            medicoRef.once('value').then(snapshot => {
+                let codigoEncontrado = false;
+
+                snapshot.forEach(childSnapshot => {
+                    const medicoData = childSnapshot.val();
+                    const codigosDesconto = medicoData.codigo_desconto || [];
+
+                    if (codigosDesconto.includes(codigoDesconto)) {
+                        resultadoDiv.innerHTML = `Código encontrado. Médico: ${medicoData.nome}, CRM: ${medicoData.crm}`;
+                        codigoEncontrado = true;
+                    }
+                });
+
+                if (!codigoEncontrado) {
+                    resultadoDiv.innerHTML = 'Código de Desconto não encontrado.';
+                }
+            });
+        }
+
+        // Função para gerar um código único de desconto e exibir no input
+        function gerarCodigoDescontoUnicoNoInput() {
+            const novoCodigo = gerarCodigoDesconto();
+            document.getElementById('novo-codigo-desconto').value = novoCodigo;
+        }
+
+        // Função para gerar o código de desconto no formato CD1000000
+        function gerarCodigoDesconto() {
+            const prefixo = 'CD';
+            const numero = Math.floor(Math.random() * 1000000).toString().padStart(7, '0');
+            return prefixo + numero;
+        }
+
+        // Função para incluir novo código de desconto
+        function incluirCodigoDesconto(codigoDesconto, medicoId) {
+            const medicoRef = database.ref('medicos/' + medicoId);
+
+            medicoRef.once('value').then(snapshot => {
+                if (snapshot.exists()) {
+                    const medicoData = snapshot.val();
+                    const codigosDesconto = medicoData.codigo_desconto || [];
+
+                    // Verifica se o código já existe
+                    if (codigosDesconto.includes(codigoDesconto)) {
+                        alert('O código de desconto já existe para este médico.');
+                    } else {
+                        // Adiciona o novo código de desconto ao médico
+                        codigosDesconto.push(codigoDesconto);
+
+                        medicoRef.update({
+                            codigo_desconto: codigosDesconto
+                        }).then(() => {
+                            alert('Código de Desconto incluído com sucesso.');
+                        });
+                    }
+                }
+            });
+        }
+
+        // Função para listar códigos de desconto de um médico
+        function listarCodigosDescontoMedico(medicoId) {
+            const medicoRef = database.ref('medicos/' + medicoId);
+            const resultadoDiv = document.getElementById('resultado-lista-codigos-desconto');
+            resultadoDiv.innerHTML = ''; // Limpa o resultado anterior
+
+            medicoRef.once('value').then(snapshot => {
+                if (snapshot.exists()) {
+                    const medicoData = snapshot.val();
+                    const codigosDesconto = medicoData.codigo_desconto || [];
+
+                    resultadoDiv.innerHTML = 'Códigos de Desconto:<br>' + codigosDesconto.join(', ');
+                } else {
+                    resultadoDiv.innerHTML = 'Nenhum código de desconto encontrado para o médico selecionado.';
+                }
+            });
+        }
+
+        // Carregar os médicos no dropdown ao carregar a página
+        window.onload = function() {
+            carregarMedicosDropdownDesconto('medico-select-desconto');
+            carregarMedicosDropdownDesconto('medico-listar-select-desconto');
+        };
+
+        // Listener para o formulário de utilização de código de desconto
+        document.getElementById('form-utilizar-codigo-desconto').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const codigoDesconto = document.getElementById('codigo-desconto').value.trim();
+            if (codigoDesconto) {
+                utilizarCodigoDesconto(codigoDesconto);
+            }
+        });
+
+        // Listener para o formulário de consulta de código de desconto
+        document.getElementById('form-consultar-codigo-desconto').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const codigoDesconto = document.getElementById('consulta-codigo-desconto').value.trim();
+            if (codigoDesconto) {
+                consultarCodigoDesconto(codigoDesconto);
+            }
+        });
+
+        // Listener para o formulário de inclusão de código de desconto
+        document.getElementById('form-incluir-codigo-desconto').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const codigoDesconto = document.getElementById('novo-codigo-desconto').value.trim();
+            const medicoId = document.getElementById('medico-select-desconto').value;
+            if (codigoDesconto && medicoId) {
+                incluirCodigoDesconto(codigoDesconto, medicoId);
+            }
+        });
+
+        // Listener para o formulário de listar códigos de desconto
+        document.getElementById('form-listar-codigos-desconto').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const medicoId = document.getElementById('medico-listar-select-desconto').value;
+            if (medicoId) {
+                listarCodigosDescontoMedico(medicoId);
+            }
+        });
+    </script>
+</body>
+</html>
