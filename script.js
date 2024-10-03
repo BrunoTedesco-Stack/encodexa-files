@@ -6,7 +6,8 @@
 let cpfValidado = false;
 let descontoPercentual = 0;
 let codigoDescontoUsado = false;
-// Referências ao DOM
+
+// Referências aos elementos do DOM
 const form = document.getElementById('formulario-exame');
 const cpfInput = document.getElementById('cpf');
 const nomeInput = document.getElementById('nome');
@@ -21,10 +22,18 @@ const activationCodeField = document.getElementById('activation-code'); // Campo
 // Lista de campos que serão bloqueados até a validação do CPF
 const camposParaBloquear = ['nome', 'data', 'telefone', 'email', 'cep', 'rua', 'bairro', 'cidade', 'uf'];
 
-// URLs e chaves de API (use placeholders para informações sensíveis)
+// URLs e chaves de API (substitua pela sua chave de API real)
 const apiCpfUrl = 'https://gateway.apibrasil.io/api/v2/dados/cpf/credits';
 const apiCpfKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FwcC5hcGlicmFzaWwuaW8vYXV0aC9yZWdpc3RlciIsImlhdCI6MTcyNzQ3MDQ2OSwiZXhwIjoxNzU5MDA2NDY5LCJuYmYiOjE3Mjc0NzA0NjksImp0aSI6IkN2b2tzNGNFeWFxWm5QS0kiLCJzdWIiOiIxMTUyMiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.OwrUsq32pOuJjIeOFf_CawQsXJm00bD4dNRoHg64W7o'; // Substitua pela sua chave de API real
 
+// Funções globais para mostrar e ocultar elementos
+function showElement(element) {
+    element.style.display = 'block';
+}
+
+function hideElement(element) {
+    element.style.display = 'none';
+}
 
 // #endregion
 
@@ -37,6 +46,8 @@ const apiCpfKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2Fw
 document.addEventListener('DOMContentLoaded', function () {
     exibirModalAtivacao(); // Exibe o modal de ativação
     atualizarValorFinal(); // Inicializa o valor final do exame
+    handleRadioSelection(); // Configura os event listeners para os radio buttons
+    verificarSelecaoTipoExame(); // Verifica a seleção inicial dos tipos de exame
 });
 
 // #endregion
@@ -63,9 +74,9 @@ document.getElementById('validar-cpf-btn').addEventListener('click', function() 
     }
 });
 
-// Função para formatar o CPF
+// Função para formatar o CPF em tempo real
 function formatarCPF(cpfInput) {
-    let cpf = cpfInput.value.replace(/\D/g, ''); // Remove não dígitos
+    let cpf = cpfInput.value.replace(/\D/g, ''); // Remove caracteres não numéricos
 
     if (cpf.length > 9) {
         cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2}).*/, "$1.$2.$3-$4");
@@ -78,7 +89,7 @@ function formatarCPF(cpfInput) {
     cpfInput.value = cpf;
 }
 
-// Função para consultar o CPF na API
+// Função para consultar o CPF na API externa
 async function consultarCreditoCPF(cpf) {
     try {
         exibirLoaderModal();
@@ -139,7 +150,7 @@ function bloquearCamposSeCpfNaoValidado(event, campo, mensagem) {
     }
 }
 
-// Adiciona eventos de foco aos campos para bloquear
+// Adiciona eventos de foco aos campos que devem ser bloqueados
 camposParaBloquear.forEach(campoId => {
     const campo = document.getElementById(campoId);
     if (campo) {
@@ -157,11 +168,12 @@ camposParaBloquear.forEach(campoId => {
 
 // #region Validação de E-mail
 
-// Validação do E-mail
+// Evento para validar o e-mail ao perder o foco
 emailInput.addEventListener('blur', function() {
     validarEmail();
 });
 
+// Função para validar o e-mail
 function validarEmail() {
     const email = emailInput.value.trim();
 
@@ -187,15 +199,17 @@ function validarEmail() {
 
 // #region Validação de Telefone
 
-// Validação e Formatação do Telefone
+// Evento para formatar o telefone em tempo real
 telefoneInput.addEventListener('input', function(e) {
     e.target.value = formatarTelefone(e.target.value);
 });
 
+// Evento para validar o telefone ao perder o foco
 telefoneInput.addEventListener('blur', function() {
     validarTelefone();
 });
 
+// Função para formatar o telefone
 function formatarTelefone(telefone) {
     telefone = telefone.replace(/\D/g, '');
 
@@ -208,6 +222,7 @@ function formatarTelefone(telefone) {
     return telefone;
 }
 
+// Função para validar o telefone
 function validarTelefone() {
     const telefone = telefoneInput.value.trim();
 
@@ -237,15 +252,17 @@ function validarTelefone() {
 
 // #region Validação de CEP
 
-// Eventos para o CEP
+// Evento para validar o CEP ao perder o foco
 cepInput.addEventListener('blur', function() {
     validarCep();
 });
 
+// Evento para formatar o CEP em tempo real
 cepInput.addEventListener('input', function() {
     formatarCepEmTempoReal();
 });
 
+// Função para formatar o CEP em tempo real
 function formatarCepEmTempoReal() {
     let cep = cepInput.value.replace(/\D/g, '');
 
@@ -258,6 +275,7 @@ function formatarCepEmTempoReal() {
     cepInput.classList.remove('valid', 'input-error');
 }
 
+// Função para validar o CEP
 function validarCep() {
     let cep = cepInput.value.trim().replace(/\D/g, '');
 
@@ -311,7 +329,7 @@ async function buscarCep(cep) {
 
 // #region Modais
 
-// Funções para exibir e fechar modais
+// Função para exibir o modal de validação
 function exibirModal(mensagem) {
     const modal = document.getElementById("modal-validation");
     const modalMessages = document.getElementById("modal-messages");
@@ -324,25 +342,30 @@ function exibirModal(mensagem) {
     }
 }
 
+// Função para exibir mensagens de erro
 function exibirModalErro(mensagem) {
     exibirModal(mensagem);
 }
 
+// Função para fechar o modal de validação
 function closeModal() {
     document.getElementById('modal-validation').style.display = 'none';
 }
 
+// Função para exibir o loader no modal
 function exibirLoaderModal() {
     document.getElementById('modal-messages').innerText = '';
     document.getElementById('loader').style.display = 'block';
     document.getElementById('modal-validation').style.display = 'block';
 }
 
+// Função para esconder o loader no modal
 function esconderLoaderModal() {
     document.getElementById('loader').style.display = 'none';
     document.getElementById('modal-validation').style.display = 'none';
 }
 
+// Função para exibir o modal geral
 function exibirModalGeral(mensagem) {
     const modal = document.getElementById("modal-geral");
     const modalMessages = document.getElementById("modal-geral-messages");
@@ -355,6 +378,7 @@ function exibirModalGeral(mensagem) {
     }
 }
 
+// Função para fechar o modal geral
 function closeModalGeral(callback) {
     const modal = document.getElementById("modal-geral");
     modal.style.display = "none";
@@ -372,7 +396,7 @@ function closeModalGeral(callback) {
 
 // #region Código de Ativação
 
-//função que deixa ó codigo de ativação indisponivel
+// Função para tornar o código de ativação indisponível após o uso
 function utilizarCodigoAtivacao(codigoAtivacao, exameId) {
     return new Promise((resolve, reject) => {
         const codigoRef = database.ref('codigos_ativacao/disponiveis/' + codigoAtivacao);
@@ -399,14 +423,13 @@ function utilizarCodigoAtivacao(codigoAtivacao, exameId) {
     });
 }
 
-
-// Exibir modal de ativação ao carregar a página
+// Exibe o modal de ativação ao carregar a página
 function exibirModalAtivacao() {
     document.getElementById('modal-activation').style.display = 'block';
     document.getElementById('formulario-container').style.display = 'none';
 }
 
-// Evento ao clicar no botão de verificação
+// Evento ao clicar no botão de verificação do código de ativação
 document.getElementById('check-activation-btn').addEventListener('click', function () {
     const codigoAtivacao = document.getElementById('activation-code-input').value.trim();
 
@@ -423,7 +446,7 @@ document.getElementById('check-activation-btn').addEventListener('click', functi
             database.ref('medicos/' + resultado.medico_id).once('value').then(medicoSnapshot => {
                 const medicoData = medicoSnapshot.val();
                 const nomeMedico = medicoData.nome;
-                const sexoMedico = medicoData.sexo; // Supondo que o campo 'sexo' exista no BD ('masculino' ou 'feminino')
+                const sexoMedico = medicoData.sexo; // 'masculino' ou 'feminino'
                 const crmMedico = medicoData.crm;
 
                 // Formata o nome do médico conforme o sexo
@@ -465,7 +488,7 @@ document.getElementById('check-activation-btn').addEventListener('click', functi
     });
 });
 
-// Função para verificar o código de ativação
+// Função para verificar o código de ativação no banco de dados
 function verificarCodigoAtivacao(codigoAtivacao) {
     return new Promise((resolve, reject) => {
         const paths = ['disponiveis', 'indisponiveis', 'inutilizados'];
@@ -516,7 +539,7 @@ function reexibirCamposAtivacao() {
     document.getElementById('loader').style.display = 'none';
 }
 
-// Função para exibir o loader durante a verificação
+// Função para exibir o loader durante a verificação do código de ativação
 function exibirLoaderVerificacao() {
     document.querySelector('p').style.display = 'none';
     document.querySelector('label[for="activation-code-input"]').style.display = 'none';
@@ -529,7 +552,7 @@ function exibirLoaderVerificacao() {
     document.getElementById('activation-error').textContent = 'Verificando código de ativação...';
 }
 
-// Função para selecionar o médico (atualizada para refletir as mudanças)
+// Função para selecionar o médico após verificação do código
 function selecionarMedico(nomeMedico, idMedico) {
     medicoInput.value = nomeMedico;
     medicoIdInput.value = idMedico;
@@ -550,36 +573,111 @@ document.querySelectorAll('input[name="tipo-exame"]').forEach((radio) => {
 });
 
 // Evento ao clicar no botão de validar cupom
+// Evento ao clicar no botão de validar cupom
 document.getElementById('validar-cupom-btn').addEventListener('click', async () => {
     const codigoDesconto = document.getElementById('codigo-desconto').value.trim();
     const priceInfoDiv = document.querySelector('.price-info');
-    const termsDiv = document.querySelector('.terms');
-     // Função para ocultar um elemento
-     function hideElement(element) {
-        element.style.display = 'none';
+    const produtoEscolhido = document.getElementById('produto-escolhido');
+    const valorOriginal = document.getElementById('valor-original');
+    const valorAtualizado = document.getElementById('valor-atualizado');
+    const valorDesconto = document.getElementById('valor-desconto');
+    const percentualDesconto = document.getElementById('percentual-desconto');
+    
+    // Referência ao modal e ao loader
+    const modal = document.getElementById('modal-validation');
+    const modalMessages = document.getElementById('modal-messages');
+    const loader = document.getElementById('loader-valida');
+    const modalHeader = document.querySelector('.modal-header');
+
+    // Função para exibir o modal
+    function showModal() {
+        modal.style.display = 'block';
+        modalMessages.innerText = 'Validando seu cupom...'; // Define a mensagem de validação
+        modalHeader.innerText = 'Validação de Cupom'; // Muda o título do modal
+        loader.style.display = 'block'; // Exibe o loader
     }
 
-    // Função para exibir um elemento
-    function showElement(element) {
-        element.style.display = 'block';
+    // Função para fechar o modal
+    function closeModal() {
+        modal.style.display = 'none';
+        loader.style.display = 'none'; // Oculta o loader
+        modalMessages.innerText = ''; // Limpa a mensagem
+    }
+
+    // Função para verificar se todos os campos obrigatórios estão preenchidos
+    function verificarCamposObrigatorios() {
+        const camposObrigatorios = ['nome', 'cpf', 'email', 'telefone', 'cep', 'rua', 'bairro', 'cidade', 'uf'];
+        let todosPreenchidos = true;
+
+        camposObrigatorios.forEach((campoId) => {
+            const campo = document.getElementById(campoId);
+            if (!campo || campo.value.trim() === '') {
+                todosPreenchidos = false;
+                campo.classList.add('input-error'); // Adiciona borda vermelha nos campos vazios
+            } else {
+                campo.classList.remove('input-error'); // Remove borda vermelha
+            }
+        });
+
+        return todosPreenchidos;
+    }
+    preencherResumoPedido();
+    // Exibe o modal de carregamento
+    showModal();
+
+    // Verifica se o CPF foi validado e se todos os campos obrigatórios estão preenchidos
+    if (!cpfValidado || !verificarCamposObrigatorios()) {
+        loader.style.display = 'none'; // Oculta o loader
+        modalMessages.innerText = 'Por favor, preencha todos os campos obrigatórios e valide o CPF antes de aplicar o cupom.';
+        return;
     }
 
     if (codigoDesconto) {
-        const percentual = await validarCupom(codigoDesconto);
-        if (percentual !== null) {
-            aplicarDesconto(percentual);
-            alert(`Cupom de ${percentual}% aplicado com sucesso!`);
-            showElement(priceInfoDiv);
-            showElement(termsDiv);
-        } else {
-            alert('Cupom inválido.');
+        try {
+            const percentual = await validarCupom(codigoDesconto);
+
+            // Simula 2 segundos de validação
+            setTimeout(() => {
+                loader.style.display = 'none'; // Oculta o loader após a validação
+
+                if (percentual !== null) {
+                    // Atualiza a price-info com os detalhes
+                    const tipoExameSelecionado = document.querySelector('input[name="tipo-exame"]:checked').value;
+                    const valorOriginalExame = parseFloat(tipoExameSelecionado);
+                    const valorComDesconto = valorOriginalExame - (valorOriginalExame * (percentual / 100));
+
+                    // Atualiza a price-info
+                    produtoEscolhido.textContent = tipoExameSelecionado === '800' ? 'Exame com pesquisa de HPV inclusa.' : 'Exame sem pesquisa de HPV inclusa.';
+                    valorOriginal.textContent = `R$${valorOriginalExame.toFixed(2)}`;
+                    percentualDesconto.textContent = `${percentual}%`;
+                    valorDesconto.textContent = `R$${(valorOriginalExame * (percentual / 100)).toFixed(2)}`;
+                    valorAtualizado.textContent = `R$${valorComDesconto.toFixed(2)}`;
+
+                    // Exibe a div price-info
+                    priceInfoDiv.style.display = 'block';
+
+                    // Mensagem de sucesso no modal
+                    modalMessages.innerText = `Cupom de ${percentual}% aplicado com sucesso!`;
+
+                    // Ancorar para a div de price-info
+                    priceInfoDiv.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    // Se o cupom não for válido, exibe uma mensagem de erro no modal
+                    modalMessages.innerText = 'Cupom inválido.';
+                }
+            }, 2000); // Simula o tempo de validação de 2 segundos
+
+        } catch (error) {
+            console.error('Erro ao validar o cupom:', error);
+            modalMessages.innerText = 'Ocorreu um erro ao validar o cupom. Tente novamente.';
         }
     } else {
-        alert('Por favor, insira um código de desconto.');
+        loader.style.display = 'none'; // Oculta o loader caso o campo de cupom esteja vazio
+        modalMessages.innerText = 'Por favor, insira um código de desconto.';
     }
 });
 
-// Função para validar o cupom
+// Função para validar o cupom no banco de dados
 async function validarCupom(codigoDesconto) {
     try {
         const medicosRef = database.ref('medicos');
@@ -607,7 +705,7 @@ async function validarCupom(codigoDesconto) {
     }
 }
 
-// Função para aplicar o desconto
+// Função para aplicar o desconto ao valor final
 function aplicarDesconto(percentual) {
     const valorExame = parseFloat(document.querySelector('input[name="tipo-exame"]:checked').value);
     const precoComDesconto = valorExame - (valorExame * (percentual / 100));
@@ -621,14 +719,20 @@ function aplicarDesconto(percentual) {
 
 // Função para atualizar o valor final do exame
 function atualizarValorFinal() {
-    const valorExame = parseFloat(document.querySelector('input[name="tipo-exame"]:checked').value);
-    document.getElementById('valor-final').textContent = `R$${valorExame.toFixed(2)}`;
+    const tipoExameSelecionado = document.querySelector('input[name="tipo-exame"]:checked');
+    const valorFinalElement = document.getElementById('valor-final');
 
-    // Reseta o desconto
-    descontoPercentual = 0;
-    codigoDescontoUsado = false;
+    if (tipoExameSelecionado) {
+        const valorExame = parseFloat(tipoExameSelecionado.value);
+        valorFinalElement.textContent = `R$${valorExame.toFixed(2)}`;
+
+        // Reseta o desconto
+        descontoPercentual = 0;
+        codigoDescontoUsado = false;
+    } else {
+        valorFinalElement.textContent = 'R$0,00';
+    }
 }
-
 
 // #endregion
 
@@ -639,29 +743,29 @@ function atualizarValorFinal() {
 // #region Submissão do Formulário
 
 // Evento de submissão do formulário
-// Evento de submissão do formulário
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Verificar se todos os campos obrigatórios estão preenchidos
+    // Verificar se o CPF foi validado
     if (!cpfValidado) {
         exibirModalGeral('Por favor, valide o CPF antes de enviar o formulário.');
         return;
     }
 
+    // Verificar se os termos foram aceitos
     if (!document.getElementById('terms').checked) {
         exibirModalGeral('Você deve aceitar os termos e condições para prosseguir.');
         return;
     }
+
     const tipoExameSelecionado = document.querySelector('input[name="tipo-exame"]:checked').value;
-let tipoExameGravar = '';
+    let tipoExameGravar = '';
 
-if (tipoExameSelecionado === '800') {
-    tipoExameGravar = 'C_TESTE_HPV';
-} else if (tipoExameSelecionado === '700') {
-    tipoExameGravar = 'S_TESTE_HPV';
-}
-
+    if (tipoExameSelecionado === '800') {
+        tipoExameGravar = 'C_TESTE_HPV';
+    } else if (tipoExameSelecionado === '700') {
+        tipoExameGravar = 'S_TESTE_HPV';
+    }
 
     // Coleta os dados do formulário
     const formData = {
@@ -686,7 +790,6 @@ if (tipoExameSelecionado === '800') {
         activation_code: activationCodeField.value
     };
 
-
     // Envia os dados para o Firebase
     const newFormEntry = database.ref('formularios-exames').push();
     newFormEntry.set(formData)
@@ -709,27 +812,44 @@ if (tipoExameSelecionado === '800') {
 
 // #endregion
 
+// ============================
+// Seleção dos Tipos de Exame e Atualização da Interface
+// ============================
+
+// #region Seleção de Tipos de Exame
+
+// Preenchendo as informações no resumo
+function preencherResumoPedido() {
+    document.getElementById('nome-cliente').textContent = document.getElementById('nome').value;
+    document.getElementById('cpf-cliente').textContent = document.getElementById('cpf').value;
+    document.getElementById('email-cliente').textContent = document.getElementById('email').value;
+    document.getElementById('telefone-cliente').textContent = document.getElementById('telefone').value;
+    
+    // Construindo o endereço completo
+    const endereco = `${document.getElementById('rua').value}, ${document.getElementById('bairro').value}, 
+                      ${document.getElementById('cidade').value} - ${document.getElementById('uf').value}`;
+    document.getElementById('endereco-cliente').textContent = endereco;
+    document.getElementById('cep-cliente').textContent = document.getElementById('cep').value;
+}
+
+
+
 // Seleciona todos os radio buttons do tipo "tipo-exame"
 const tipoExameRadios = document.querySelectorAll('input[name="tipo-exame"]');
 
 // Função para verificar se algum radio button está selecionado
 function verificarSelecaoTipoExame() {
-    // Seleciona a div price-info
-   // const priceInfoDiv = document.querySelector('.price-info');
     const descontoInfoDiv = document.querySelector('.secao-descontos');
 
     // Verifica se algum radio button está selecionado
     const tipoExameSelecionado = document.querySelector('input[name="tipo-exame"]:checked');
 
     if (tipoExameSelecionado) {
-        // Se algum radio button está selecionado, exibe a div
-     //   priceInfoDiv.style.display = 'block';
-        descontoInfoDiv.style.display = 'block';
+        // Se algum radio button está selecionado, exibe a seção de descontos
+        showElement(descontoInfoDiv);
     } else {
-        // Se nenhum radio button está selecionado, oculta a div
-      //  priceInfoDiv.style.display = 'none';
-        descontoInfoDiv.style.display = 'none';
-
+        // Se nenhum radio button está selecionado, oculta a seção de descontos
+        hideElement(descontoInfoDiv);
     }
 }
 
@@ -741,146 +861,101 @@ tipoExameRadios.forEach((radio) => {
     });
 });
 
-// Função para atualizar o valor final do exame
-function atualizarValorFinal() {
-    const tipoExameSelecionado = document.querySelector('input[name="tipo-exame"]:checked');
-    const valorFinalElement = document.getElementById('valor-final');
+// Função para lidar com a seleção dos radio buttons e atualizar a interface
+function handleRadioSelection() {
+    // Seleciona os radio buttons e as divs correspondentes
+    const radio800 = document.querySelector('input[name="tipo-exame"][value="800"]');
+    const radio700 = document.querySelector('input[name="tipo-exame"][value="700"]');
+    const divRadio800 = document.querySelector('.div-radio-800');
+    const divRadio700 = document.querySelector('.div-radio-700');
 
-    if (tipoExameSelecionado) {
-        const valorExame = parseFloat(tipoExameSelecionado.value);
-        valorFinalElement.textContent = `R$${valorExame.toFixed(2)}`;
-    } else {
-        valorFinalElement.textContent = 'R$0,00';
+    // Seleciona a div da seção de descontos
+    const secaoDescontosDiv = document.querySelector('.secao-descontos');
+
+    // Função para adicionar padding inferior dinamicamente (se necessário)
+    function addBottomPadding() {
+        const formContainer = document.getElementById('formulario-container');
+        const viewportHeight = window.innerHeight;
+        const rect = secaoDescontosDiv.getBoundingClientRect();
+        const secaoDescontosOffsetTop = rect.top + window.pageYOffset;
+        const distanceFromBottom = document.body.scrollHeight - secaoDescontosOffsetTop;
+
+        if (distanceFromBottom < viewportHeight) {
+            const paddingNeeded = viewportHeight - distanceFromBottom;
+            formContainer.style.paddingBottom = paddingNeeded + 'px';
+        } else {
+            formContainer.style.paddingBottom = '0px';
+        }
     }
+
+    // Função para atualizar a seleção visual e lógica
+    function updateSelection() {
+        if (radio800.checked) {
+            divRadio800.classList.add('selected');
+            divRadio700.classList.remove('selected');
+        } else if (radio700.checked) {
+            divRadio700.classList.add('selected');
+            divRadio800.classList.remove('selected');
+        } else {
+            divRadio800.classList.remove('selected');
+            divRadio700.classList.remove('selected');
+        }
+
+        // Atualiza a interface
+        verificarSelecaoTipoExame();
+        atualizarValorFinal();
+
+        // Após atualizar a seleção, adiciona padding e rola para a seção de descontos
+        setTimeout(() => {
+            addBottomPadding();
+
+            // Rola para a seção de descontos
+            if (secaoDescontosDiv) {
+                secaoDescontosDiv.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                console.error('Elemento com a classe "secao-descontos" não encontrado.');
+            }
+        }, 100);
+    }
+
+    // Adiciona event listeners aos radio buttons
+    radio800.addEventListener('change', updateSelection);
+    radio700.addEventListener('change', updateSelection);
+
+    // Adiciona event listeners às divs para permitir clique nelas
+    divRadio800.addEventListener('click', () => {
+        radio800.checked = true;
+        updateSelection();
+    });
+
+    divRadio700.addEventListener('click', () => {
+        radio700.checked = true;
+        updateSelection();
+    });
 }
 
-// Chamar a função para verificar a seleção inicial (caso necessário)
-verificarSelecaoTipoExame();
+// #endregion
 
-// Função para lidar com a seleção dos radio buttons
-document.addEventListener('DOMContentLoaded', () => {
-    function handleRadioSelection() {
-        // Seleciona os radio buttons e as divs correspondentes
-        const radio800 = document.querySelector('input[name="tipo-exame"][value="800"]');
-        const radio700 = document.querySelector('input[name="tipo-exame"][value="700"]');
-        const divRadio800 = document.querySelector('.div-radio-800');
-        const divRadio700 = document.querySelector('.div-radio-700');
+// ============================
+// Exibição da Seção de Descontos e Termos
+// ============================
 
-        // Seleciona a div da seção de descontos usando a classe
-        const secaoDescontosDiv = document.querySelector('.secao-descontos');
-        console.log('secaoDescontosDiv:', secaoDescontosDiv);
+// #region Exibição da Seção de Descontos
 
-        // Função para adicionar padding inferior dinamicamente
-        function addBottomPadding() {
-            console.log('addBottomPadding called');
-            const formContainer = document.getElementById('formulario-container');
-            const viewportHeight = window.innerHeight;
-            const rect = secaoDescontosDiv.getBoundingClientRect();
-            const secaoDescontosOffsetTop = rect.top + window.pageYOffset;
-            const distanceFromBottom = document.body.scrollHeight - secaoDescontosOffsetTop;
+// Evento de clique no label "Não possuo um código de desconto"
+const labelNaoPossuoCupom = document.getElementById('nao-possuo-cupom');
+labelNaoPossuoCupom.addEventListener('click', () => {
+    console.log('Label "Não possuo um código de desconto" clicado');
 
-            console.log('Viewport Height:', viewportHeight);
-            console.log('Secao Descontos Offset Top:', secaoDescontosOffsetTop);
-            console.log('Distance From Bottom:', distanceFromBottom);
-
-            if (distanceFromBottom < viewportHeight) {
-                const paddingNeeded = viewportHeight - distanceFromBottom;
-                console.log('Padding Needed:', paddingNeeded);
-                formContainer.style.paddingBottom = paddingNeeded + 'px';
-            } else {
-                console.log('No padding needed.');
-            }
-        }
-
-        // Função para atualizar a seleção
-        function updateSelection() {
-            console.log('updateSelection called');
-            if (radio800.checked) {
-                divRadio800.classList.add('selected');
-                divRadio700.classList.remove('selected');
-            } else if (radio700.checked) {
-                divRadio700.classList.add('selected');
-                divRadio800.classList.remove('selected');
-            } else {
-                divRadio800.classList.remove('selected');
-                divRadio700.classList.remove('selected');
-            }
-
-            // Chama as funções existentes para atualizar a interface
-            verificarSelecaoTipoExame();
-            atualizarValorFinal();
-
-            // Após atualizar a seleção e exibir as divs ocultas, adiciona padding e rola para a seção de descontos
-            setTimeout(() => {
-                // Adiciona padding inferior se necessário
-                addBottomPadding();
-
-                // Rola para a seção de descontos
-                if (secaoDescontosDiv) {
-                    secaoDescontosDiv.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                    console.error('Elemento com a classe "secao-descontos" não encontrado.');
-                }
-            }, 100);
-        }
-
-        // Adiciona event listeners aos radio buttons
-        radio800.addEventListener('change', updateSelection);
-        radio700.addEventListener('change', updateSelection);
-
-        // Adiciona event listeners às divs para permitir clique nelas
-        divRadio800.addEventListener('click', () => {
-            radio800.checked = true;
-            updateSelection();
-        });
-
-        divRadio700.addEventListener('click', () => {
-            radio700.checked = true;
-            updateSelection();
-        });
-    }
-
-    // Chama a função para configurar os event listeners
-    handleRadioSelection();
-});
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Selecionar os elementos
-    //const btnComCupom = document.getElementById('com_cupom');
-    //const btnSemCupom = document.getElementById('sem_cupom');
-   // const btnsCupom = document.querySelector('.btn_sim_nao_cupom');
-    const campoDesconto = document.querySelector('.campo-btn-desconto');
-    const labelNaoPossuoCupom = document.getElementById('nao-possuo-cupom');
     const secaoDescontosDiv = document.getElementById('secao-descontos');
     const priceInfoDiv = document.querySelector('.price-info');
-    const termosaceite = document.querySelector('.terms');
+    const termosAceite = document.querySelector('.terms');
 
-    // Função para ocultar um elemento
-    function hideElement(element) {
-        element.style.display = 'none';
-    }
-
-    // Função para exibir um elemento
-    function showElement(element) {
-        element.style.display = 'block';
-    }
-
-
-    // Evento de clique no label "Não possuo um código de desconto"
-    labelNaoPossuoCupom.addEventListener('click', () => {
-        console.log('Label "Não possuo um código de desconto" clicado');
-      
-        // Mostrar a seção de descontos
-        showElement(secaoDescontosDiv);
-       // hideElement(campoDesconto);
-        showElement(labelNaoPossuoCupom);
-        showElement(termosaceite);
-        // Exibir a div "price-info"
-        showElement(priceInfoDiv);
-
-
-
-
-    });
+    // Exibe as seções necessárias
+    showElement(secaoDescontosDiv);
+    showElement(labelNaoPossuoCupom);
+    showElement(termosAceite);
+    showElement(priceInfoDiv);
 });
+
+// #endregion

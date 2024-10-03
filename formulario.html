@@ -207,16 +207,87 @@
                 </div>
                 <label id="nao-possuo-cupom" class="link">Não possuo um código de desconto</label>
             </div>
-            
-            <!-- Seção: Valor Final -->
-            <div class="price-info" style="display: none;">
-                <p>Informações sobre o seu pedido:</p>
+            <!-- Div price-info -->  
+<div class="price-info" style="display: none;">
+    <h2>Resumo do Pedido</h2>
+    <hr class="divider">
+    <h3>Confira as informações sobre seu pedido:</h3>
+    <hr class="divider">
 
-                <p>Valor final do exame: <span id="valor-final">R$800,00</span></p>
+    <!-- Informações sobre o exame -->
+    <div class="price-item">
+        <span>Tipo de exame escolhido:</span>
+        <strong><span id="produto-escolhido"></span></strong>
+    </div>
 
-                <p>Clique em Finalizar Pedido para prosseguir.</p>
-            </div><br>
-            
+    <div class="price-item">
+        <span>Valor original do exame:</span>
+        <strong><span id="valor-original"></span></strong>
+    </div>
+
+    <div class="price-item">
+        <span>Percentual de desconto aplicado:</span>
+        <strong><span id="percentual-desconto"></span></strong>
+    </div>
+
+    <div class="price-item">
+        <span>Valor em R$ do desconto:</span>
+        <strong><span id="valor-desconto"></span></strong>
+    </div>
+
+    <hr class="divider">
+
+    <div class="price-item total">
+        <span>Valor final com desconto:</span>
+        <strong><span id="valor-atualizado"></span></strong>
+    </div>
+
+    <hr class="divider">
+    <h3>Confira suas informações pessoais:</h3>
+    <hr class="divider">
+
+    <!-- Informações pessoais -->
+    <div class="price-item">
+        <span>Nome:</span>
+        <strong><span id="nome-cliente"></span></strong>
+    </div>
+
+    <div class="price-item">
+        <span>CPF:</span>
+        <strong><span id="cpf-cliente"></span></strong>
+    </div>
+
+    <div class="price-item">
+        <span>Email:</span>
+        <strong><span id="email-cliente"></span></strong>
+    </div>
+
+    <div class="price-item">
+        <span>Telefone:</span>
+        <strong><span id="telefone-cliente"></span></strong>
+    </div>
+
+    <div class="price-item">
+        <span>Endereço:</span>
+        <strong><span id="endereco-cliente"></span></strong>
+    </div>
+
+    <div class="price-item">
+        <span>CEP:</span>
+        <strong><span id="cep-cliente"></span></strong>
+    </div>
+
+    <hr class="divider">
+    <p style="display: none;">Tipo de exame escolhido:<a id="valor-final">R$0,00</p>
+    <!-- Botão para finalizar pedido -->
+    <button class="finalizar-pedido-btn">Finalizar Pedido</button>
+</div>
+
+
+
+
+
+
             <!-- Seção: Termos e Condições -->
             <div class="terms" style="display: none;">
                 <input type="checkbox" id="terms" name="terms">
@@ -239,6 +310,11 @@
                 </div>
             </div>
             
+            
+
+
+
+
             <!-- Modal de Validação de CPF -->
             <div id="modal-validation" class="modal">
                 <div class="modal-content">
@@ -247,7 +323,7 @@
                         <!-- Mensagens de erro ou sucesso -->
                     </div>
                     <!-- Loader (oculto por padrão) -->
-                    <div id="loader" class="loader" style="display: none;"></div>
+                    <div id="loader-valida" class="loader-valida" style="display: none;"></div>
                     <button type="button" class="modal-close" onclick="closeModal()">Fechar</button>
                 </div>
             </div>

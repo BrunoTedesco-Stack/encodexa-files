@@ -1,8 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
-/* Define box-sizing: border-box globalmente */
+/* Reset CSS */
 *, *::before, *::after {
     box-sizing: border-box;
+}
+
+body, html {
+    padding: 0;
+    margin: 0;
+    width: 100%;
 }
 
 body {
@@ -13,194 +19,179 @@ body {
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
-    margin: 0;
-    width: 100%;
 }
 
-body, html {
-    padding: 0;
-    margin: 0;
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
+/* Títulos */
 h1 {
     color: #435ba1;
     font-size: 2.2rem;
     margin-bottom: 20px;
 }
 
-
+/* Seção: Informações Médicas */
 .informa-medica {
     background-color: #eafafc;
-    padding-top: 20px;
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-bottom: 25px;
+    padding: 20px 30px 25px 30px;
     border-radius: 5px;
-    
     font-weight: 600;
     max-width: 900px;
-    width: calc(100% - 30px); /* Ajusta a largura para considerar as margens */
+    width: calc(100% - 30px);
     text-align: left;
-    margin: 0 15px; /* Adiciona margens pequenas à esquerda e direita */
+    margin: 0 15px;
 }
 
 .informa-medica label {
     color: #17a7b8;
 }
 
+/* Estilos para Divs com preços e informações */
 .div-800 {
-    background-color: #757474;;
+    background-color: #757474;
     padding: 20px;
-    border: #3ec7be;
     margin: 15px;
 }
 
-.div-radio-800 {
-    background-color: #75747494;
-    padding: 20px;
-    border: #3ec7be;
-    margin: 15px;
-    
-    /* Seus estilos existentes */
-    cursor: pointer; /* Muda o cursor para indicar interatividade */
-    transition: background-color 0.2s ease-in-out; /* Transição suave */
-    padding: 10px; /* Espaçamento interno */
-    margin-bottom: 10px; /* Espaçamento entre as opções */
-}
-
-.div-radio-800:hover {
-   background-color: #3ec7be; /* Cor de fundo ao passar o mouse */
-}
-
-.div-radio-800.selected {
-    background-color: #1dd0e7; /* Cor especificada */
-}
-
+/* Estilos para Opções de Exame */
+.div-radio-800,
 .div-radio-700 {
     background-color: #75747494;
-    border-radius: 5px;
-    padding: 20px;
-    border: #3ec7be;
+    padding: 10px;
+    border: 1px solid #3ec7be;
     margin: 15px;
-    /* Seus estilos existentes */
-    cursor: pointer; /* Muda o cursor para indicar interatividade */
-    transition: background-color 0.2s ease-in-out; /* Transição suave */
-    padding: 10px; /* Espaçamento interno */
-    margin-bottom: 10px; /* Espaçamento entre as opções */
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
 }
 
+.div-radio-800:hover,
 .div-radio-700:hover {
- background-color: #3ec7be; /* Cor de fundo ao passar o mouse */
+    background-color: #3ec7be;
 }
 
+.div-radio-800.selected,
 .div-radio-700.selected {
-  background-color: #1dd0e7; /* Cor especificada */
+    background-color: #1dd0e7;
 }
 
-
-
+/* Seção: Tipos de Exame */
 .tipos-exame {
     background-color: #879bdd;
     padding: 20px;
-    
-   
-    margin-bottom: 40px;
+    margin: 0 15px 40px 15px;
     font-weight: 600;
     max-width: 700px;
     width: calc(100% - 30px);
     color: #ffffff;
     text-align: center;
+}
+
+.tipos-exame h2 {
+    color: #ffffff;
+}
+
+/* Seção: Cupom de Desconto */
+.secao-descontos {
+    background-color: #eafafc;
+    padding: 20px 30px 100px 30px;
+    border-radius: 5px;
+    font-weight: 600;
+    max-width: 900px;
+    width: calc(100% - 30px);
+    text-align: left;
     margin: 0 15px;
 }
 
-.tipos-exame h2{
-    color: #ffffff;
-
-
-}
-
-.secao-descontos {
-    background-color: #eafafc;
-    padding-top: 20px;
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-bottom: 100px;
-    border-radius: 5px;
-    
-    font-weight: 600;
-    max-width: 900px;
-    width: calc(100% - 30px); /* Ajusta a largura para considerar as margens */
-    text-align: left;
-    margin: 0 15px; 
-}
-
-
-
 .link {
+    
     color: blue;
-    text-decoration: underline;
+    
     cursor: pointer;
 }
 
-.btn_sim_nao_cupom {
+
+/* Seção: Informação de Preços */
+.price-info {
+   background-color: #eafafc;
+    padding: 20px 30px 100px 30px;
+    border-radius: 5px;
+    font-weight: 600;
+    max-width: 900px;
+    width: calc(100% - 30px);
+    text-align: left;
+    margin: 0 15px;
+    
+    
+}
+
+.price-info h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.price-info h3 {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.price-item {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    align-items: center; /* Garante que os elementos fiquem alinhados verticalmente */
+    width: 100%;
 }
 
-/* Estilos para os botões */
-.btn_sim_nao_cupom button {
-    flex: 1;
-    margin: 0 5px;
-    padding: 10px;
-    font-size: 16px;
+.price-item span {
+    flex: 1; /* Garante que a parte esquerda ocupe o espaço corretamente */
+    text-align: left; /* Alinha o texto à esquerda */
 }
 
-.btn_sim_nao_cupom button:first-child {
-    margin-left: 0;
+.price-item strong {
+    flex: 1; /* Garante que a parte direita ocupe o espaço corretamente */
+    text-align: right; /* Alinha o texto à direita */
+    font-size: 1.2rem;
+    color: #333;
 }
 
-.btn_sim_nao_cupom button:last-child {
-    margin-right: 0;
+
+.price-item.total {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1dd0e7;
 }
 
-/* Classe para elementos com transição */
-.elemento-transicao {
-    transition: opacity 0.5s ease, max-height 0.5s ease;
-    overflow: hidden;
-    opacity: 1;
-    max-height: 1000px; /* Valor suficientemente grande para acomodar o conteúdo */
+.divider {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
 }
 
-/* Elementos inicialmente ocultos */
-.oculto {
-    opacity: 0;
-    max-height: 0;
-}
-
-.price-info {
-    background-color: #879bdd;
-    
-    padding: 20px;
+.finalizar-pedido-btn {
+    display: block;
+    width: 100%;
+    background-color: #1dd0e7;
+    color: #fff;
+    padding: 12px;
+    border: none;
     border-radius: 5px;
-    margin-bottom: 40px;
+    cursor: pointer;
+    font-size: 1rem;
     font-weight: 600;
-    max-width: 700px;
-    width: calc(100% - 30px);
-    color: #ffffff;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
     text-align: center;
-    margin: 0 15px;
 }
 
+.finalizar-pedido-btn:hover {
+    background-color: #17a7b8;
+}
+
+
+/* Formulário */
 form {
     background-color: #ffffff;
     padding: 30px;
@@ -211,9 +202,10 @@ form {
     border: 2px solid #1dd0e7;
     display: flex;
     flex-direction: column;
-    margin: 0 15px; /* Adiciona margens pequenas à esquerda e direita */
+    margin: 0 15px;
 }
 
+/* Labels e Inputs */
 label {
     font-weight: 600;
     margin-bottom: 8px;
@@ -234,11 +226,9 @@ textarea {
     border: 1px solid #1dd0e7;
     border-radius: 5px;
     font-size: 1rem;
-    
 }
 
-
-
+/* Botões Gerais */
 button {
     width: 100%;
     background-color: #1dd0e7;
@@ -260,9 +250,11 @@ button:hover {
     margin-bottom: 20px;
 }
 
+/* Seção: Termos e Condições */
 .terms {
     display: flex;
     align-items: center;
+    margin-bottom: 20px;
 }
 
 .terms input[type="checkbox"] {
@@ -270,6 +262,7 @@ button:hover {
     transform: scale(1.2);
 }
 
+/* Grupo de Rádio */
 .radio-group {
     display: flex;
     justify-content: space-between;
@@ -288,8 +281,8 @@ button:hover {
     transform: scale(1.2);
 }
 
-.modal,
-#modal-validation {
+/* Modais */
+.modal {
     display: none;
     position: fixed;
     z-index: 1000;
@@ -337,11 +330,7 @@ button:hover {
     background-color: #17a7b8;
 }
 
-.input-error {
-    border: 2px solid #e74c3c;
-    background-color: rgba(231, 76, 60, 0.1);
-}
-
+/* Linha de Formulário */
 .form-row {
     display: flex;
     justify-content: space-between;
@@ -352,12 +341,18 @@ button:hover {
     width: 48%;
 }
 
-.flatpickr-day.selected {
-    background-color: #1dd0e7;
-    color: white;
+/* Loader */
+.loader {
+    border: 4px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 4px solid #3498db;
+    width: 30px;
+    height: 30px;
+    animation: spin 2s linear infinite;
+    margin: 10px auto;
 }
 
-.loader {
+.loader-valida {
     border: 4px solid #f3f3f3;
     border-radius: 50%;
     border-top: 4px solid #3498db;
@@ -372,11 +367,12 @@ button:hover {
     100% { transform: rotate(360deg); }
 }
 
+/* Subtítulos */
 .subtitulos {
     color: #435ba1;
 }
 
-/* Ajustes responsivos */
+/* Ajustes Responsivos */
 @media (max-width: 768px) {
 
     h1 {
@@ -385,6 +381,10 @@ button:hover {
 
     .informa-medica,
     .price-info,
+    .tipos-exame,
+    .secao-descontos,
+    .div-radio-800,
+    .div-radio-700,
     form {
         padding: 20px;
         margin: 0 15px;
@@ -442,6 +442,11 @@ button:hover {
 
     .informa-medica,
     .price-info,
+    .tipos-exame,
+    .secao-descontos,
+    .div-radio-800,
+    .div-radio-700,
+
     form {
         padding: 15px;
         margin: 0 10px;
@@ -460,11 +465,9 @@ button:hover {
     }
 
     img {
-        margin-top: 20px;
-        margin-bottom: 10px;
-        margin-left: 15px;
+        margin: 20px 15px 10px 15px;
         width: 200px;
         position: relative;
-
     }
 }
+
