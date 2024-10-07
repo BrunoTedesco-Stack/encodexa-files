@@ -59,48 +59,63 @@
                 <label for="activation-code">Seu código de ativação:</label>
                 <input type="text" id="activation-code" name="activation-code" tabindex="1" class="cod-atv-medico">
                 <!-- Campo: Médico Responsável -->
-                <div class="autocomplete">
+                <div style="display: none;" class="autocomplete">
                     <label for="medico">Médico responsável:</label>
                     <input type="text" id="medico-search" placeholder="Digite para buscar o médico..." disabled>
                     <!-- Campo oculto para o ID do médico -->
                     <input type="hidden" id="medico-id" name="medico-id">
                 </div>
             </div>
-              
+            <label id="titulo-validacao" class="subtitulos"><h3>Para iniciar vamos validar o seu cpf.</h3></label>
+           
             <!-- Seção: Informações Pessoais -->
             <div class="informa-medica">
-                <label for="radio-group" class="subtitulos"><h2>Nos conte mais sobre você:</h2></label>
-                <div class="form-row">
+             
+               
+                
                     <!-- Grupo de Formulários -->
                     <div class="form-group">
+                        <hr  id="divider-inicio" class="divider" style="display: none;">
+                        <label id="titulo-div-dados" class="subtitulos"><h2>Informações pessoais</h2></label>
+                        <div id="div-nome-data" class="form-group-item" style="display: none;">
                         <!-- Campo: Nome -->
                         <label for="nome">Nome:</label>
                         <input type="text" id="nome" name="nome" tabindex="2">
-                        <!-- Campo: CPF -->
-                        <label for="cpf">Digite o CPF:</label>
-                        <input type="text" id="cpf" placeholder="000.000.000-00" tabindex="4" maxlength="14">
-                        <!-- Resultado da validação do CPF -->
-                        <div id="resultado"></div>
-                    </div>
-                    <!-- Outro Grupo de Formulários -->
-                    <div class="form-group">
                         <!-- Campo: Data de Nascimento -->
                         <label for="data-nascimento">Data de Nascimento:</label>
                         <input type="text" id="data" name="data" required placeholder="dd/mm/aaaa" tabindex="3" maxlength="10">
+                        </div>
+                        
+                        <!-- Campo: CPF -->
+                        <label for="cpf">Digite o CPF:</label>
+                        <div id="envolve-cpf-e-link" class="capa-campo-cpf-elink">
+                        <input type="text" id="cpf" placeholder="000.000.000-00" tabindex="4" maxlength="14">
+                        <label id="alterar-cpf" class="link-cpf" style="display: none;">Alterar CPF</label>
+                        </div>
+                        <!-- Resultado da validação do CPF -->
+                        <div id="resultado"></div>
                         <!-- Botão: Validar CPF -->
                         <button type="button" id="validar-cpf-btn">Validar CPF</button>
-                    </div>
+                        <div id="div-email-telefone" class="form-group-item" style="display: none;">
+                        <label for="email">E-mail:</label>
+                        <input type="email" id="email" name="email">
+                        <label for="telefone">Telefone:</label>
+                        <input type="text" id="telefone" name="telefone">
+                        
+                        </div>
+
+
+                   
+                    
                 </div>
-                <!-- Campos de Contato -->
-                <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email">
-                <label for="telefone">Telefone:</label>
-                <input type="text" id="telefone" name="telefone">
+               
+               
             </div>
             
             <!-- Seção: Endereço -->
-            <div class="informa-medica">
-                <label for="radio-group" class="subtitulos"><h2>Endereço:</h2></label>
+            <div id="secao-endereco" class="secao-endereco" style=" display: none;">
+                <hr class="divider">
+                <label class="subtitulos"><h2>Endereço:</h2></label>
                 <!-- Campo: CEP -->
                 <label for="cep">CEP:</label>
                 <input type="text" id="cep" name="cep">
@@ -152,15 +167,17 @@
                 <!-- Campo: Cidade -->
                 <label for="cidade">Cidade:</label>
                 <input type="text" id="cidade" name="cidade">
+                <hr class="divider">
+                <button type="button" id="prosseguir-endereco" style="display: none;">Prosseguir</button>
             </div>
             <!-- Seção: Opções do Exame -->
-            <div class="tipos-exame">
+            <div id="secao-exames" class="tipos-exame" style="display: none;">
                 <label><h2>Opções do exame:</h2></label>
             
                 <p><h3>Escolha entre o exame de Microbioma Vaginal com ou sem pesquisa de HPV</h3></p>
-                <div class="div-800"><p>Valor do exame COM pesquisa de HPV: <span>R$800,00</span></p></div>
+                <div id="div-800" class="div-800"><p>Valor do exame COM pesquisa de HPV: <span>R$800,00</span></p></div>
                 
-                <div class="div-800"><p>Valor do exame SEM pesquisa de HPV: <span>R$700,00</span></p></div>
+                <div id="div-700" class="div-800"><p>Valor do exame SEM pesquisa de HPV: <span>R$700,00</span></p></div>
                 <p>Caso seu médico tenha lhe fornecido um código de desconto, o mesmo deverá ser aplicado no campo Código de Desconto ao final deste formulário.</p>
 
                 <h3>Desejo realizar o exame:</h3>
@@ -210,42 +227,12 @@
             <!-- Div price-info -->  
 <div class="price-info" style="display: none;">
     <h2>Resumo do Pedido</h2>
-    <hr class="divider">
-    <h3>Confira as informações sobre seu pedido:</h3>
-    <hr class="divider">
-
-    <!-- Informações sobre o exame -->
-    <div class="price-item">
-        <span>Tipo de exame escolhido:</span>
-        <strong><span id="produto-escolhido"></span></strong>
-    </div>
-
-    <div class="price-item">
-        <span>Valor original do exame:</span>
-        <strong><span id="valor-original"></span></strong>
-    </div>
-
-    <div class="price-item">
-        <span>Percentual de desconto aplicado:</span>
-        <strong><span id="percentual-desconto"></span></strong>
-    </div>
-
-    <div class="price-item">
-        <span>Valor em R$ do desconto:</span>
-        <strong><span id="valor-desconto"></span></strong>
-    </div>
-
-    <hr class="divider">
-
-    <div class="price-item total">
-        <span>Valor final com desconto:</span>
-        <strong><span id="valor-atualizado"></span></strong>
-    </div>
-
+    <button type="button" id="btn-voltar-cupom" style="display: none;" >Inserir cupom</button>
     <hr class="divider">
     <h3>Confira suas informações pessoais:</h3>
+   
     <hr class="divider">
-
+    
     <!-- Informações pessoais -->
     <div class="price-item">
         <span>Nome:</span>
@@ -277,27 +264,160 @@
         <strong><span id="cep-cliente"></span></strong>
     </div>
 
+
+    <hr class="divider">
+    <h3>Confira as informações sobre seu pedido:</h3>
+    <hr class="divider">
+    
+        <!-- Informações sobre o exame -->
+        <div class="price-item">
+            <span>Tipo de exame escolhido:</span>
+            <strong><span id="produto-escolhido"></span></strong>
+        </div>
+    
+        <div class="price-item">
+            <span>Valor original do exame:</span>
+            <strong><span id="valor-original"></span></strong>
+        </div>
+    
+        <div class="price-item">
+            <span>Percentual de desconto aplicado:</span>
+            <strong><span id="percentual-desconto"></span></strong>
+        </div>
+    
+        <div class="price-item">
+            <span>Valor em R$ do desconto:</span>
+            <strong><span id="valor-desconto"></span></strong>
+        </div>
+    
+        <hr class="divider">
+    
+        <div class="price-item total">
+            <span>Valor final com desconto:</span>
+            <strong><span id="valor-atualizado"></span></strong>
+        </div> 
+    
+
+
+    
+
     <hr class="divider">
     <p style="display: none;">Tipo de exame escolhido:<a id="valor-final">R$0,00</p>
     <!-- Botão para finalizar pedido -->
-    <button class="finalizar-pedido-btn">Finalizar Pedido</button>
+                 <!-- Seção: Termos e Condições -->
+                 <div class="terms" style="display: block;">
+                    <input type="checkbox" id="terms_genoa" name="terms">
+                    <label for="terms">
+                        Ao fornecer seu e-mail e telefone, você autoriza a Encodexa™ a entrar em contato para questões relacionadas aos seus exames e a enviar os resultados por meio eletrônico. Você pode atualizar ou revogar essa autorização a qualquer momento.
+                    </label>
+                </div><br>
+                <hr class="divider">
+    <button  class="finalizar-pedido-btn"  type="submit">Finalizar Pedido</button>
+</div>
+
+<!--SEÇÃO CASO O FATURAMENTO SEJA CLINICA EXIBE ESSAS DIVS AQUI-->
+<div id="escolha-exame-clinica" class="tipos-exame" style="display: none;">
+    <label><h2>Opções do exame:</h2></label>
+
+    <p><h3>Escolha entre o exame de Microbioma Vaginal com ou sem pesquisa de HPV</h3></p>
+  
+    <h3>Desejo realizar o exame:</h3>
+    
+    <div class="radio-group">
+        <!-- Opção 1: Exame com teste de HPV -->
+        <div id="div-radio-800-clinica" class="div-radio-800-clinica">
+        
+            <input id="radio800" type="radio" name="tipo-exame-clinica" value="800">
+            <p>Microbioma Vaginal</p>
+            <p>(c/ pesquisa de HPV)</p>
+           
+        
+        </div>
+        <div id="div-radio-800-clinica" class="div-radio-700-clinica">
+        <!-- Opção 2: Exame sem teste de HPV -->
+        
+            <input id="radio700" type="radio" name="tipo-exame-clinica" value="700">
+            <p>Microbioma Vaginal</p>
+            <p>(s/ pesquisa de HPV)</p>
+           
+        
+        </div>
+   
+</div>
+<button id="botao-finalizar-clinica" type="button" class="button" >Prosseguir para a finalização</button>
+</div>
+
+
+<div id="finalizacao-clinica" class="price-info-clinica" style="display: none;">
+    <h2>Resumo do Pedido</h2>
+    <button type="button" id="btn-voltar-cupom" style="display: none;" >Inserir cupom</button>
+    <hr class="divider">
+    <h3>Confira suas informações pessoais:</h3>
+   
+    <hr class="divider">
+    
+    <!-- Informações pessoais -->
+    <div class="price-item">
+        <span>Nome:</span>
+        <strong><span id="nome-cliente-clinica"></span></strong>
+    </div>
+
+    <div class="price-item">
+        <span>CPF:</span>
+        <strong><span id="cpf-cliente-clinica"></span></strong>
+    </div>
+
+    <div class="price-item">
+        <span>Email:</span>
+        <strong><span id="email-cliente-clinica"></span></strong>
+    </div>
+
+    <div class="price-item">
+        <span>Telefone:</span>
+        <strong><span id="telefone-cliente-clinica"></span></strong>
+    </div>
+
+    <div class="price-item">
+        <span>Endereço:</span>
+        <strong><span id="endereco-cliente-clinica"></span></strong>
+    </div>
+
+    <div class="price-item">
+        <span>CEP:</span>
+        <strong><span id="cep-cliente-clinica"></span></strong>
+    </div>
+
+
+    <hr class="divider">
+    <h3>Confira as informações sobre seu pedido:</h3>
+    <hr class="divider">
+    
+        <!-- Informações sobre o exame -->
+        <div class="price-item">
+            <span>Tipo de exame escolhido:</span>
+            <strong><span id="produto-escolhido-clinica"></span></strong>
+        </div>
+    
+       
+        <hr class="divider">
+
+        <div class="terms" style="display: block;">
+            <input type="checkbox" id="terms_clinica" name="terms">
+            <label for="terms">
+                Ao fornecer seu e-mail e telefone, você autoriza a Encodexa™ a entrar em contato para questões relacionadas aos seus exames e a enviar os resultados por meio eletrônico. Você pode atualizar ou revogar essa autorização a qualquer momento.
+            </label>
+        </div><br>
+    
+       <button id="button-enviar-clinica" type="submit" class="button">FINALIZAR PEDIDO</button>
+    
 </div>
 
 
 
 
-
-
-            <!-- Seção: Termos e Condições -->
-            <div class="terms" style="display: none;">
-                <input type="checkbox" id="terms" name="terms">
-                <label for="terms">
-                    Ao fornecer seu e-mail e telefone, você autoriza a Encodexa™ a entrar em contato para questões relacionadas aos seus exames e a enviar os resultados por meio eletrônico. Você pode atualizar ou revogar essa autorização a qualquer momento.
-                </label>
-            </div><br>
             
-            <!-- Botão: Enviar -->
-            <button type="submit">Enviar</button>
+         <!-- Modal para exibir durante a validação do CEP -->
+
             
             <!-- Modal Geral para Mensagens -->
             <div id="modal-geral" class="modal">
@@ -309,6 +429,8 @@
                     <button type="button" class="modal-close" onclick="closeModalGeral()">Fechar</button>
                 </div>
             </div>
+            
+            
             
             
 
@@ -324,9 +446,73 @@
                     </div>
                     <!-- Loader (oculto por padrão) -->
                     <div id="loader-valida" class="loader-valida" style="display: none;"></div>
-                    <button type="button" class="modal-close" onclick="closeModal()">Fechar</button>
+                    <button id="button-validation" type="button" class="modal-close" onclick="closeModal()">Fechar</button>
                 </div>
             </div>
+
+            <div id="modal-validacao-cep" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">Validação de CEP</div>
+                    <div class="modal-body" id="modal-messages">
+                        <!-- Mensagens de erro ou sucesso -->
+                    </div>
+                    <!-- Loader (oculto por padrão) -->
+                    <div id="loader-valida-cep" class="loader-valida" style="display: none;"></div>
+                    
+                </div>
+            </div>
+
+
+            <div id="modal-validation-pedido" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">Validando o pedido</div>
+                    <div class="modal-body" id="modal-messages-pedido">
+                        <!-- Mensagens de erro ou sucesso -->
+                    </div>
+                    <!-- Loader (oculto por padrão) -->
+                    <div id="loader-valida-pedido" class="loader-valida" style="display: none;"></div>
+                    <button id="button-pedido" type="button" class="modal-close" onclick="closeModalPedido()">Fechar</button>
+                </div>
+            </div>
+
+            <div id="modal-validation-cupom" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">Validando seu cupom</div>
+                    <div class="modal-body" id="modal-messages-cupom">
+                        <!-- Mensagens de erro ou sucesso -->
+                    </div>
+                    <!-- Loader (oculto por padrão) -->
+                    <div  id="loader-valida-cupom" class="loader-valida" style="display: none;"></div>
+                 <button id="button-cupom" type="button" class="modal-close" onclick="closeModalCupom()">Fechar</button>
+                </div>
+            </div>
+
+            <div id="modal-validation-cliente" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">Registrando informações</div>
+                    <div class="modal-body" id="modal-messages-cliente">
+                        <!-- Mensagens de erro ou sucesso -->
+                    </div>
+                    <!-- Loader (oculto por padrão) -->
+                    <div  id="loader-valida-cliente" class="loader-valida" style="display: none;"></div>
+                 <button id="button-cliente" type="button" class="modal-close" onclick="closeModalCupom()">Fechar</button>
+                </div>
+            </div>
+
+            <div id="modal-validation-envio" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">Registrando informações</div>
+                    <div class="modal-body" id="modal-messages-envio">
+                        <!-- Mensagens de erro ou sucesso -->
+                    </div>
+                    <!-- Loader (oculto por padrão) -->
+                    <div  id="loader-valida-envio" class="loader-valida" style="display: none;"></div>
+                 <button id="button-envio" type="button" class="modal-close" onclick="closeModalCupom()">Fechar</button>
+                </div>
+            </div>
+            <br>
+
+            <label><center>Encodexa™ - Todos os direitos reservados - 2024</center></label>
         </form>
     </div>
 
@@ -334,3 +520,5 @@
     <script src="script.js"></script>
 </body>
 </html>
+
+

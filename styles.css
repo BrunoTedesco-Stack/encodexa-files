@@ -28,8 +28,11 @@ h1 {
     margin-bottom: 20px;
 }
 
+
+
 /* Seção: Informações Médicas */
 .informa-medica {
+    
     background-color: #eafafc;
     padding: 20px 30px 25px 30px;
     border-radius: 5px;
@@ -42,6 +45,27 @@ h1 {
 
 .informa-medica label {
     color: #17a7b8;
+}
+
+.secao-endereco {
+    
+    background-color: #eafafc;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 0px;
+    padding-bottom: 30px;
+    border-radius: 5px;
+    font-weight: 600;
+    max-width: 900px;
+    width: calc(100% - 30px);
+    text-align: left;
+    margin: 0 15px;
+}
+
+.secao-endereco h3 {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 20px;
 }
 
 /* Estilos para Divs com preços e informações */
@@ -63,6 +87,8 @@ h1 {
     transition: background-color 0.2s ease-in-out;
 }
 
+
+
 .div-radio-800:hover,
 .div-radio-700:hover {
     background-color: #3ec7be;
@@ -72,6 +98,52 @@ h1 {
 .div-radio-700.selected {
     background-color: #1dd0e7;
 }
+
+.div-800,
+.div-700 {
+    background-color: #75747494;
+    padding: 10px;
+    border: 1px solid #3ec7be;
+    margin: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.div-800:hover,
+.div-700:hover {
+    background-color: #3ec7be;
+}
+
+.div-radio-800-clinica,
+.div-radio-700-clinica {
+    background-color: #75747494;
+    padding: 10px;
+    border: 1px solid #3ec7be;
+    width: 100%;
+    margin: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.div-radio-800-clinica:hover,
+.div-radio-700-clinica:hover {
+    background-color: #3ec7be;
+}
+
+.div-radio-800-clinica.selected,
+.div-radio-700-clinica.selected {
+    background-color: #1dd0e7;
+}
+
+
+.selected-radio {
+    background-color: #1dd0e7; /* Cor que você deseja quando o radio for selecionado */
+    border: 2px solid #3ec7be; /* Opcional: se quiser um destaque maior */
+    transition: background-color 0.3s ease;
+}
+
 
 /* Seção: Tipos de Exame */
 .tipos-exame {
@@ -101,12 +173,27 @@ h1 {
     margin: 0 15px;
 }
 
+.capa-campo-cpf-elink{
+    position: relative;
+    margin-bottom: 20px;
+}
+.link-cpf {
+    
+    color: blue;   
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    bottom: -20px; /* Ajuste conforme o espaçamento desejado */
+    cursor: pointer; /* Mostra que é clicável */
+}
 .link {
     
-    color: blue;
-    
+    color: blue;   
     cursor: pointer;
 }
+
+
+
 
 
 /* Seção: Informação de Preços */
@@ -247,6 +334,7 @@ button:hover {
 }
 
 .form-group {
+    
     margin-bottom: 20px;
 }
 
@@ -369,7 +457,7 @@ button:hover {
 
 /* Subtítulos */
 .subtitulos {
-    color: #435ba1;
+    color: #00aaba;
 }
 
 /* Ajustes Responsivos */
@@ -383,8 +471,11 @@ button:hover {
     .price-info,
     .tipos-exame,
     .secao-descontos,
+    .secao-endereco,
     .div-radio-800,
     .div-radio-700,
+    .div-radio-800-clinica,
+.div-radio-700-clinica,
     form {
         padding: 20px;
         margin: 0 15px;
@@ -444,8 +535,11 @@ button:hover {
     .price-info,
     .tipos-exame,
     .secao-descontos,
+    .secao-endereco,
     .div-radio-800,
     .div-radio-700,
+    .div-radio-800-clinica,
+.div-radio-700-clinica,
 
     form {
         padding: 15px;
