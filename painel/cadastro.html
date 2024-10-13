@@ -3,298 +3,850 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastrar Médicos e Códigos de Validação</title>
+    <title>Painel de Cadastro de Médicos</title>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-    <style>
-        .desconto-field {
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 <body>
-    <h1>Cadastrar Médico Manualmente</h1>
-    <form id="form-medico">
-        <!-- Dados do médico -->
-        <label for="crm-medico">CRM:</label>
-        <input type="text" id="crm-medico" placeholder="Digite o CRM do médico" required><br>
 
-        <label for="nome-medico">Nome:</label>
-        <input type="text" id="nome-medico" placeholder="Digite o nome do médico" required><br>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2>Painel de Gerenciamento</h2>
+            <ul class="nav-links">
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Cadastro de Médicos</a></li>
+                <li><a href="#">Gerenciamento de Códigos</a></li>
+                <li><a href="#">Configurações</a></li>
+            </ul>
+        </aside>
 
-        <label for="sexo-medico">Sexo:</label>
-        <select id="sexo-medico" required>
-            <option value="Masculino">Masculino</option>
-            <option value="Feminino">Feminino</option>
-            <option value="Outro">Outro</option>
-        </select><br>
+        <div class="main-content">
+            <header class="header">
+                <h1>Cadastro de Médicos e Códigos de Validação</h1>
+            </header>
+            <div class="card-container">
+                <!-- Card para Cadastro de Médicos -->
+                <div class="card">
+                    <h3>Cadastrar Médicos</h3>
+                    <button class="btn-primary" onclick="abrirModalCadastro()">Cadastrar</button>
+                </div>
+                
+                <!-- Card para Filtrar Médicos -->
+                <div class="card">
+                    <h3>Filtrar Médicos</h3>
+                    <input type="text" id="filtro-crm" placeholder="Filtrar por CRM" oninput="filtrarMedicos()">
+                    <input type="text" id="filtro-nome" placeholder="Filtrar por Nome" oninput="filtrarMedicos()">
+                    <input type="text" id="filtro-telefone" placeholder="Filtrar por Telefone" oninput="formatarTelefone(this)">
+                    <input type="text" id="filtro-setor" placeholder="Filtrar por Setor" oninput="filtrarMedicos()">
+                </div>
+            </div>
 
-        <label for="email-medico">Email:</label>
-        <input type="email" id="email-medico" placeholder="Digite o email do médico" required><br>
+            <div class="card-container" style="display: none;">
+                <div class="card">
+                    <h3>Cadastro Manual de Médicos</h3>
+                    <form id="form-medico">
+                        <label for="crm-medico2">CRM:</label>
+                        <input type="text" id="crm-medico2" placeholder="Digite o CRM do médico" required><br>
 
-        <label for="telefone-medico">Telefone:</label>
-        <input type="text" id="telefone-medico" placeholder="Digite o telefone do médico" required><br>
+                        <label for="nome-medico">Nome:</label>
+                        <input type="text" id="nome-medico3" placeholder="Digite o nome do médico" required><br>
 
-        <label for="cep-medico">CEP:</label>
-        <input type="text" id="cep-medico" placeholder="Digite o CEP do médico" required><br>
+                        <label for="sexo-medico">Sexo:</label>
+                        <select id="sexo-2" required>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Feminino">Feminino</option>
+                            <option value="Outro">Outro</option>
+                        </select><br>
 
-        <label for="rua-medico">Rua:</label>
-        <input type="text" id="rua-medico" placeholder="Digite a rua do médico" required><br>
+                        <label for="cpf-medico">CPF:</label>
+                        <input type="text" id="cpf-medico-manual" placeholder="Digite o CPF do médico" required><br>
 
-        <label for="numero-medico">Número:</label>
-        <input type="text" id="numero-medico" placeholder="Digite o número" required><br>
+                        <label for="email-medico">Email:</label>
+                        <input type="email" id="email-medico2" class="email-medico" placeholder="Digite o email do médico" required><br>
 
-        <label for="complemento-medico">Complemento:</label>
-        <input type="text" id="complemento-medico" placeholder="Digite o complemento"><br>
+                        <label for="telefone-medico">Telefone:</label>
+                        <input type="text" id="telefone-medico" placeholder="Digite o telefone do médico" required><br>
 
-        <label for="bairro-medico">Bairro:</label>
-        <input type="text" id="bairro-medico" placeholder="Digite o bairro" required><br>
+                        <label for="cep-medico">CEP:</label>
+                        <input type="text" id="cep-medico2" placeholder="Digite o CEP do médico" required><br>
 
-        <label for="cidade-medico">Cidade:</label>
-        <input type="text" id="cidade-medico" placeholder="Digite a cidade" required><br>
+                        <label for="rua-medico">Rua:</label>
+                        <input type="text" id="rua-medico2" placeholder="Digite a rua do médico" required><br>
 
-        <label for="estado-medico">Estado:</label>
-        <input type="text" id="estado-medico" placeholder="Digite o estado" required><br>
+                        <label for="numero-medico">Número:</label>
+                        <input type="text" id="numero-medico2" placeholder="Digite o número" required><br>
 
-        <!-- Campo para códigos de desconto e porcentagem -->
-        <h2>Códigos de Desconto</h2>
-        <div id="descontos-container">
-            <div class="desconto-field">
-                <label for="codigo-desconto">Código de Desconto:</label>
-                <input type="text" class="codigo-desconto" placeholder="Digite o código de desconto">
-                <label for="porcentagem-desconto">Porcentagem:</label>
-                <input type="number" class="porcentagem-desconto" placeholder="Digite a porcentagem" min="0" max="100">
-                <button type="button" onclick="adicionarCampoDesconto()">+</button>
+                        <label for="complemento-medico">Complemento:</label>
+                        <input type="text" id="complemento-medico2" placeholder="Digite o complemento"><br>
+
+                        <label for="bairro-medico">Bairro:</label>
+                        <input type="text" id="bairro-medico2" placeholder="Digite o bairro" required><br>
+
+                        <label for="cidade-medico">Cidade:</label>
+                        <input type="text" id="cidade-medico2" placeholder="Digite a cidade" required><br>
+
+                        <label for="estado-medico">Estado:</label>
+                        <input type="text" id="estado-medico2" placeholder="Digite o estado" required><br>
+
+                        <label for="setor-medico">Setor:</label>
+                        <input type="text" id="setor-medico2" placeholder="Digite o setor ao qual o médico pertence" required><br>
+
+                        <label for="tipo-faturamento">Tipo de Faturamento:</label>
+                        <select id="tipo-faturamento" required>
+                            <option value="Genoa">Genoa</option>
+                            <option value="Clinica">Clinica</option>
+                        </select><br>
+
+                        <!-- Campo para códigos de desconto -->
+                        <h2>Códigos de Desconto</h2>
+                        <div id="descontos-container">
+                            <div class="desconto-field">
+                                <label for="codigo-desconto">Código de Desconto:</label>
+                                <input type="text" class="codigo-desconto" placeholder="Digite o código de desconto">
+                                <label for="porcentagem-desconto">Porcentagem:</label>
+                                <input type="number" class="porcentagem-desconto" placeholder="Digite a porcentagem" min="0" max="100">
+                                <button type="button" onclick="adicionarCampoDesconto()">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Checkbox para código de desconto automático -->
+                        <input type="checkbox" id="codigo-desconto-automatico">
+                        <label for="codigo-desconto-automatico">Gerar códigos de desconto automaticamente</label><br>
+
+                        <!-- Campo para códigos de ativação -->
+                        <h2>Códigos de Ativação</h2>
+                        <input type="text" id="codigos-ativacao" placeholder="Digite os códigos de ativação (separados por vírgula)"><br>
+                        <input type="checkbox" id="codigo-ativacao-automatico">
+                        <label for="codigo-ativacao-automatico">Gerar 10 códigos de ativação automaticamente</label><br>
+
+                        <button type="submit" class="btn-primary">Cadastrar Médico</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Cadastro em Massa de Médicos</h3>
+                    <form id="form-upload-massa">
+                        <label for="arquivo-massa">Enviar médicos em massa (.txt):</label>
+                        <input type="file" id="arquivo-massa" accept=".txt">
+                        <button type="submit" class="btn-secondary">Enviar</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Consultar Médicos</h3>
+                    <form id="form-consulta-medico">
+                        <label for="consulta-setor">Consultar Setor:</label>
+                        <input type="text" id="consulta-setor" placeholder="Digite o CRM para consulta do setor"><br>
+                        <button type="button" onclick="consultarSetor()" class="btn-tertiary">Consultar Setor</button><br><br>
+
+                        <label for="consulta-faturamento">Consultar Tipo de Faturamento:</label>
+                        <input type="text" id="consulta-faturamento" placeholder="Digite o CRM para consulta do faturamento"><br>
+                        <button type="button" onclick="consultarFaturamento()" class="btn-tertiary">Consultar Faturamento</button><br><br>
+
+                        <label for="consulta-geral">Consultar Informações Gerais:</label>
+                        <input type="text" id="consulta-geral" placeholder="Digite o CRM para consulta geral"><br>
+                        <button type="button" onclick="consultarInformacoesGerais()" class="btn-tertiary">Consultar Informações Gerais</button><br><br>
+
+                        <label for="consulta-dropdown-setor">Selecionar Médico para Consultar Setor:</label>
+                        <select id="consulta-dropdown-setor" onchange="consultarSetorDropdown()">
+                            <option value="">Selecione um médico</option>
+                        </select><br><br>
+
+                        <label for="consulta-dropdown-faturamento">Selecionar Médico para Consultar Faturamento:</label>
+                        <select id="consulta-dropdown-faturamento" onchange="consultarFaturamentoDropdown()">
+                            <option value="">Selecione um médico</option>
+                        </select><br><br>
+                        <label for="consulta-dropdown-geral">Selecionar Médico para Consultar Informações Gerais:</label>
+                        <select id="consulta-dropdown-geral" onchange="consultarInformacoesGeraisDropdown()">
+                            <option value="">Selecione um médico</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+
+            <div id="resultado-consulta" style="display: none;" >
+                <h3>Resultado da Consulta</h3>
+                <table id="tabela-resultado">
+                    <thead>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Informação</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <!-- Filtros para a lista de médicos -->
+
+
+
+
+            <!-- Tabela de Médicos -->
+<h2>Lista de Médicos</h2>
+<table id="tabela-medicos">
+    <thead>
+        <tr>
+            <th>CRM</th>
+            <th>Nome</th>
+            <th>Sexo</th>
+            <th>CPF</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Cidade</th>
+            <th>Setor</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+        </div>
+    </div>
+
+    <div class="modal" id="modalCadastro">
+
+        <div id="modal-validation" class="modal-validation">
+            <div id="modal-content-cpf" class="modal-content-cpf">
+                <div id="loader-valida" class="loader" ></div>
+
+                <div class="modal-header"id="modal-header">Validando CPF...</div>
+                <div class="modal-body" id="modal-messages">
+                    <!-- Mensagens de erro ou sucesso -->
+                </div>
+                <!-- Loader (oculto por padrão) -->
+                
             </div>
         </div>
 
-        <!-- Checkbox para código de desconto automático ou manual -->
-        <input type="checkbox" id="codigo-desconto-automatico">
-        <label for="codigo-desconto-automatico">Gerar códigos de desconto automaticamente</label><br>
+        <div class="modal-content">
+            
+                <span class="close" onclick="fecharModalCadastro()">&times;</span>
+           
+            <form id="form-medico">
+                    <div class="colunas-container">
+                        <div class="subtitulo-div">
+                        <h3 class="subtitulo-texto">Informações profissionais:</h3>
+                        </div>
+                        <div class="linha">
+                            
+                            <div class="conteudo-linha">
+                                
+                                <label for="crm-medico">CRM:</label>
+                                <input type="text" id="crm-medico" class="input-crm"placeholder="Digite o CRM no formato UF000000" required maxlength="8"><br>
+                             </div>
+                            <div class="conteudo-linha"> 
+                                 <label for="uf-crm">UF-CRM:</label>
+                                 <select id="uf-crm" class="select-crm" required>
+                                    <option value="">Selecione</option>
+                                    <option value="AC">AC</option>
+                                    <option value="AL">AL</option>
+                                    <option value="AP">AP</option>
+                                    <option value="AM">AM</option>
+                                    <option value="BA">BA</option>
+                                    <option value="CE">CE</option>
+                                    <option value="DF">DF</option>
+                                    <option value="ES">ES</option>
+                                    <option value="GO">GO</option>
+                                    <option value="MA">MA</option>
+                                    <option value="MS">MS</option>
+                                    <option value="MT">MT</option>
+                                    <option value="MG">MG</option>
+                                    <option value="PA">PA</option>
+                                    <option value="PB">PB</option>
+                                    <option value="PR">PR</option>
+                                    <option value="PE">PE</option>
+                                    <option value="PI">PI</option>
+                                    <option value="RJ">RJ</option>
+                                    <option value="RN">RN</option>
+                                    <option value="RS">RS</option>
+                                    <option value="RO">RO</option>
+                                    <option value="RR">RR</option>
+                                    <option value="SC">SC</option>
+                                    <option value="SP">SP</option>
+                                    <option value="SE">SE</option>
+                                    <option value="TO">TO</option> 
+                                 </select>
+                             </div>
+                             <div class="conteudo-linha">
+                                
+                                <label for="especialidade">Especialidade:</label>
+                                <select id="especialidade-medico" class="especialidade-medico" required>
+                                    <option value="">Selecione a especialidade</option>
+                                    <option value="oncogenetica">Oncogenética</option>
+                                    <option value="medicina-aeroespacial">Medicina Aeroespacial</option>
+                                    <option value="medicina-do-sono">Medicina do Sono</option>
+                                    <option value="toxicologia-medica">Toxicologia Médica</option>
+                                    <option value="acupuntura">Acupuntura</option>
+                                    <option value="alergia-e-imunologia">Alergia e Imunologia</option>
+                                    <option value="anestesiologista">Anestesiologista</option>
+                                    <option value="angiologia">Angiologia</option>
+                                    <option value="cardiologia">Cardiologia</option>
+                                    <option value="cirurgia-cardiovascular">Cirurgia Cardiovascular</option>
+                                    <option value="cirurgia-da-mao">Cirurgia da Mão</option>
+                                    <option value="cirurgia-de-cabeca-e-pescoco">Cirurgia de Cabeça e Pescoço</option>
+                                    <option value="cirurgia-do-aparelho-digestivo">Cirurgia do Aparelho Digestivo</option>
+                                    <option value="cirurgia-geral">Cirurgia Geral</option>
+                                    <option value="cirurgia-oncologica">Cirurgia Oncológica</option>
+                                    <option value="cirurgia-pediatrica">Cirurgia Pediátrica</option>
+                                    <option value="cirurgia-plastica">Cirurgia Plástica</option>
+                                    <option value="cirurgia-toracica">Cirurgia Torácica</option>
+                                    <option value="cirurgia-vascular">Cirurgia Vascular</option>
+                                    <option value="clinica-medica">Clínica Médica</option>
+                                    <option value="coloproctologia">Coloproctologia</option>
+                                    <option value="dermatologia">Dermatologia</option>
+                                    <option value="endocrinologia-e-metabologia">Endocrinologia e Metabologia</option>
+                                    <option value="endoscopia">Endoscopia</option>
+                                    <option value="gastroenterologia">Gastroenterologia</option>
+                                    <option value="genetica-medica">Genética Médica</option>
+                                    <option value="geriatria">Geriatria</option>
+                                    <option value="ginecologia-e-obstetricia">Ginecologia e Obstetrícia</option>
+                                    <option value="hematologia-e-hemoterapia">Hematologia e Hemoterapia</option>
+                                    <option value="homeopatia">Homeopatia</option>
+                                    <option value="infectologia">Infectologia</option>
+                                    <option value="mastologia">Mastologia</option>
+                                    <option value="medicina-de-emergencia">Medicina de Emergência</option>
+                                    <option value="medicina-de-familia-e-comunidade">Medicina de Família e Comunidade</option>
+                                    <option value="medicina-do-trabalho">Medicina do Trabalho</option>
+                                    <option value="medicina-de-trafego">Medicina de Tráfego</option>
+                                    <option value="medicina-esportiva">Medicina Esportiva</option>
+                                    <option value="medicina-fisica-e-reabilitacao">Medicina Física e Reabilitação</option>
+                                    <option value="medicina-intensiva">Medicina Intensiva</option>
+                                    <option value="medicina-legal-e-pericia-medica">Medicina Legal e Perícia Médica</option>
+                                    <option value="medicina-nuclear">Medicina Nuclear</option>
+                                    <option value="medicina-preventiva-e-social">Medicina Preventiva e Social</option>
+                                    <option value="nefrologia">Nefrologia</option>
+                                    <option value="neurocirurgia">Neurocirurgia</option>
+                                    <option value="neurologia">Neurologia</option>
+                                    <option value="nutrologia">Nutrologia</option>
+                                    <option value="nutricionista">Nutricionista</option>
+                                    <option value="oftalmologia">Oftalmologia</option>
+                                    <option value="oncologia-clinica">Oncologia Clínica</option>
+                                    <option value="ortopedia-e-traumatologia">Ortopedia e Traumatologia</option>
+                                    <option value="otorrinolaringologia">Otorrinolaringologia</option>
+                                    <option value="patologia">Patologia</option>
+                                    <option value="patologia-clinica-medicina-laboratorial">Patologia Clínica/Medicina Laboratorial</option>
+                                    <option value="pediatria">Pediatria</option>
+                                    <option value="pneumologia">Pneumologia</option>
+                                    <option value="psiquiatria">Psiquiatria</option>
+                                    <option value="radiologia-e-diagnostico-por-imagem">Radiologia e Diagnóstico por Imagem</option>
+                                    <option value="radioterapia">Radioterapia</option>
+                                    <option value="reumatologia">Reumatologia</option>
+                                    <option value="urologia">Urologia</option>
+                                    </select><br>   
+                             </div>
+                             
+                           </div>
+                        
 
-        <!-- Campo para códigos de ativação -->
-        <h2>Códigos de Ativação</h2>
-        <input type="text" id="codigos-ativacao" placeholder="Digite os códigos de ativação (separados por vírgula)"><br>
-        <input type="checkbox" id="codigo-ativacao-automatico">
-        <label for="codigo-ativacao-automatico">Gerar 10 códigos de ativação automaticamente</label><br>
+                        <div class="subtitulo-div">
+                            <h3 class="subtitulo-texto">Informações pessoais:</h3>
+                            </div>
+                            <div class="linha">
+                                
+                                <div class="conteudo-linha">
+                                    <label for="cpf-medico">CPF:</label>
+                                    <input type="text" id="cpf-medico" class="cpf-medico" placeholder="Digite o CPF do médico" required maxlength="14"><br>
+                                </div>
 
-        <button type="submit">Cadastrar Médico</button>
-    </form>
+                                <div class="conteudo-linha">                                 
+                                     <label for="nome-medico">Nome:</label>
+                                     <input type="text" id="nome-medico" class="nome-medico" placeholder="Digite o nome do médico" required><br>
+                                </div>
 
-    <script>
-        // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyD5RpiWnBRLplw7IxoSTYJh9AMidFHXpVM",
-            authDomain: "encodexa.firebaseapp.com",
-            databaseURL: "https://encodexa-default-rtdb.firebaseio.com",
-            projectId: "encodexa",
-            storageBucket: "encodexa.appspot.com",
-            messagingSenderId: "575353833546",
-            appId: "1:575353833546:web:00e0f11b788ab801eebeb3"
-        };
+                                <div class="conteudo-linha">
+                                    <label for="data-nascimento-medico">Data de Nascimento:</label>
+                                    <input type="date" id="data-nascimento-medico" class="data-nascimento-medico" required><br>
+                                   </div>  
 
-        // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+                                <div class="conteudo-linha">
+                                    <label for="sexo-medico">Sexo:</label>
+                                    <select id="sexo-medico" class="sexo-medico" required>
+                                    <option value="0">Selecione o sexo</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Feminino">Feminino</option>
+                                    </select><br>   
+                               </div>
+                              
+                               <div class="conteudo-linha">
+                                <label for="email-medico">Email:</label>
+                                <input type="email" id="email-medico" class="email-medico" placeholder="Digite o email do médico" required><br>                                
+                               </div>
 
-        // Função para gerar o ID do médico no formato MED_ID_0000000
-        function gerarMedicoId() {
-            var idNumerico = Math.floor(Math.random() * 10000000).toString().padStart(7, '0');
-            return 'MED_ID_' + idNumerico;
-        }
+                               <div class="conteudo-linha">
+                                <label for="telefone-celular-medico">Telefone Celular:</label>
+                                <input type="text" id="telefone-celular-medico" class="telefone-celular-medico" placeholder="Digite o telefone do médico" required ><br>
+                               </div>   
 
-        // Função para adicionar um novo campo de código de desconto e porcentagem
-        function adicionarCampoDesconto() {
-            const descontosContainer = document.getElementById('descontos-container');
-            const newField = document.createElement('div');
-            newField.classList.add('desconto-field');
-            newField.innerHTML = `
-                <label for="codigo-desconto">Código de Desconto:</label>
-                <input type="text" class="codigo-desconto" placeholder="Digite o código de desconto">
-                <label for="porcentagem-desconto">Porcentagem:</label>
-                <input type="number" class="porcentagem-desconto" placeholder="Digite a porcentagem" min="0" max="100">
-                <button type="button" onclick="adicionarCampoDesconto()">+</button>
-            `;
-            descontosContainer.appendChild(newField);
-        }
+                               <div class="conteudo-linha">
+                                <label for="telefone-fixo-medico">Telefone Fixo (opcional):</label>
+                                <input type="text" id="telefone-fixo-medico" class="telefone-fixo-medico" placeholder="Digite o telefone do médico" required ><br>
+                               </div>    
 
-        // Função para gerar cupons de desconto automaticamente
-        function gerarCuponsDesconto() {
-            const prefixos = [
-                { percent: '5%', prefix: 'PROMO5%OFF' },
-                { percent: '10%', prefix: 'PROMO10%OFF' },
-                { percent: '15%', prefix: 'PROMO15%OFF' },
-                { percent: '20%', prefix: 'PROMO20%OFF' },
-                { percent: '25%', prefix: 'PROMO25%OFF' },
-                { percent: '30%', prefix: 'PROMO30%OFF' },
-                { percent: '100%', prefix: 'PROMO100%OFF' }
-            ];
+                               <div class="conteudo-linha">
+                                <!-- Rounded switch -->
+                                <label for="checkbox">Adicionar observação</label>
+                                <label class="switch">
+                                    
+                                 <input id="chk-obs-pessoal" type="checkbox">
+                                 <span class="slider round"></span>
+                                </label>
+                                
+                               </div>    
 
-            return prefixos.map(item => {
-                const numeroAleatorio = Math.floor(Math.random() * 1000000).toString().padStart(7, '0');
-                return {
-                    codigo: `${item.prefix}${numeroAleatorio}`,
-                    percentual: item.percent
-                };
-            });
-        }
+                              
+                                <div id="obs-pessoal" class="conteudo-linha-quadruplo-obs-pessoal" style="display: none;">
+                                        <label for="observacao">Observações:</label>
+                                        <textarea id="observacao" rows="4" placeholder="Digite aqui as observações"></textarea>    
+                                </div>
+                              
+                               
+                               
+                            </div>
+                            <div class="subtitulo-div">
+                                <h3 class="subtitulo-texto">Endereço:</h3>
+                                </div>
+                            <div class="linha">
 
-        // Função para verificar se os códigos de ativação já existem
-        function verificarCodigosExistentes(codigos, callback) {
-            var codigosArray = codigos.split(',').map(c => c.trim());
-            var codigosExistentes = [];
+                                <div class="conteudo-linha">
+                                    <label for="cep-medico">CEP:</label>
+                                    <input type="text" id="cep-medico" class="cep-medico" placeholder="Digite o CEP do médico" required><br>
 
-            var promises = codigosArray.map(codigo => {
-                return database.ref('codigos_ativacao/disponiveis/' + codigo).once('value').then(snapshot => {
-                    if (snapshot.exists()) {
-                        codigosExistentes.push(codigo);
-                    }
-                });
-            });
+                                </div>
 
-            Promise.all(promises).then(() => {
-                callback(codigosExistentes);
-            });
-        }
+                                <div class="conteudo-linha">
+                                    <label for="rua-medico">Rua:</label>
+                                    <input type="text" id="rua-medico" class="rua-medico" placeholder="Digite a rua do médico" required><br>
+                                </div>
 
-       // Função para gravar os códigos de ativação no Firebase
-function gravarCodigosAtivacao(codigos, medicoId) {
-    var codigosArray = codigos.split(',').map(c => c.trim());
+                                <div class="conteudo-linha">
+                                    <label for="numero-medico">Número:</label>
+                                    <input type="text" id="numero-medico" class="numero-medico" placeholder="Digite o número" required><br>
+                                </div>
 
-    // Objeto para armazenar os códigos de ativação dentro do médico
-    var codigosAtivacaoMedico = {};
+                                <div class="conteudo-linha">
+                                    <label for="complemento-medico">Complemento:</label>
+                                    <input type="text" id="complemento-medico"  placeholder="Digite o complemento"><br>
+                                </div>
 
-    codigosArray.forEach((codigo, index) => {
-        // Grava o código de ativação no nó global
-        database.ref('codigos_ativacao/disponiveis/' + codigo).set({
-            medico_id: medicoId // Usa o mesmo ID único do médico para todos os códigos
-        }).then(() => {
-            console.log('Código ' + codigo + ' gravado com sucesso no nó global.');
-        }).catch(error => {
-            console.error('Erro ao gravar o código no nó global: ' + error.message);
-        });
+                                <div class="conteudo-linha">
+                                    <label for="bairro-medico">Bairro:</label>
+                                    <input type="text" id="bairro-medico" class="bairro-medico" placeholder="Digite o bairro" required><br>
+                                </div>
 
-        // Adiciona o código ao objeto de códigos do médico
-        codigosAtivacaoMedico[index] = codigo;
-    });
+                                <div class="conteudo-linha">
+                                    <label for="cidade-medico">Cidade:</label>
+                                    <input type="text" id="cidade-medico" class="cidade-medico" placeholder="Digite a cidade" required><br>
+                                </div>
 
-    // Grava os códigos de ativação diretamente no ID do médico
-    database.ref('medicos/' + medicoId + '/codigos_ativacao').set(codigosAtivacaoMedico)
-        .then(() => {
-            console.log('Códigos de ativação gravados com sucesso no ID do médico.');
-        })
-        .catch(error => {
-            console.error('Erro ao gravar os códigos no ID do médico: ' + error.message);
-        });
-}
+                                <div class="conteudo-linha">
+                                    <label for="estado-medico">Estado:</label>
+                                    <select id="estado-medico" class="estado-medico" required>
+                                    <option value="">Selecione o estado</option>
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espírito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
+                                    </select><br>
+                                </div>
 
-        // Função para gravar cupons de desconto no Firebase
-        function gravarCuponsDesconto(medicoId, cuponsDesconto) {
-            const codigoDescontoObj = {};
 
-            cuponsDesconto.forEach((cupom, index) => {
-                codigoDescontoObj[index] = {
-                    codigo: cupom.codigo,
-                    percentual: cupom.percentual
-                };
-            });
 
-            // Grava os cupons de desconto no Firebase para o médico
-            database.ref('medicos/' + medicoId + '/codigo_desconto').set(codigoDescontoObj)
-                .then(() => {
-                    console.log('Cupons de desconto gravados com sucesso.');
-                })
-                .catch(error => {
-                    console.error('Erro ao gravar os cupons de desconto: ' + error.message);
-                });
-        }
+                            </div>
 
-        // Função para cadastrar médico manualmente com cupons e códigos automáticos
-        document.getElementById('form-medico').addEventListener('submit', function(event) {
-            event.preventDefault();
+                            <div class="subtitulo-div">
+                                <h3 class="subtitulo-texto">Informações adicionais:</h3>
+                                </div>
 
-            var nomeMedico = document.getElementById('nome-medico').value;
-            var crmMedico = document.getElementById('crm-medico').value;
-            var sexoMedico = document.getElementById('sexo-medico').value;
-            var emailMedico = document.getElementById('email-medico').value;
-            var telefoneMedico = document.getElementById('telefone-medico').value;
-            var cepMedico = document.getElementById('cep-medico').value;
-            var ruaMedico = document.getElementById('rua-medico').value;
-            var numeroMedico = document.getElementById('numero-medico').value;
-            var complementoMedico = document.getElementById('complemento-medico').value;
-            var bairroMedico = document.getElementById('bairro-medico').value;
-            var cidadeMedico = document.getElementById('cidade-medico').value;
-            var estadoMedico = document.getElementById('estado-medico').value;
+                            <div class="linha">
+                                <div class="conteudo-linha">
+                                    <label for="setor-medico">Setor:</label>
+                                    <input type="text" id="setor-medico" placeholder="Digite o setor ao qual o médico pertence" required><br>
+                                </div>
+                                
+                                <div class="conteudo-linha">
+                                    <label for="tipo-faturamento">Tipo de Faturamento:</label>
+                                    <select id="tipo-faturamento" required>
+                                        <option value="">Selecione o tipo de faturamento</option>
+                                        <option value="Genoa">Clinica</option>
+                                        <option value="Clinica">Genoa</option>
+                                    </select><br>
+                                </div>
+                                
 
-            var medicoId = gerarMedicoId(); // ID único para o médico
-            var codigosAtivacao = document.getElementById('codigos-ativacao').value;
-            var gerarCodigosAtivacaoAutomaticamente = document.getElementById('codigo-ativacao-automatico').checked;
-            var gerarCodigosDescontoAutomaticamente = document.getElementById('codigo-desconto-automatico').checked;
+                               
 
-            // Criar objeto do médico
-            var novoMedico = {
-                crm: crmMedico,
-                nome: nomeMedico,
-                sexo: sexoMedico,
-                email: emailMedico,
-                telefone: telefoneMedico,
-                cep: cepMedico,
-                rua: ruaMedico,
-                numero: numeroMedico,
-                complemento: complementoMedico,
-                bairro: bairroMedico,
-                cidade: cidadeMedico,
-                estado: estadoMedico,
-            };
 
-            // Verificar e gravar códigos de ativação
-            if (gerarCodigosAtivacaoAutomaticamente) {
-                // Gerar 10 códigos de ativação automaticamente
-                var codigosGerados = [];
-                for (let i = 0; i < 10; i++) {
-                    let novoCodigo = 'EX' + Math.floor(Math.random() * 1000000).toString().padStart(7, '0');
-                    codigosGerados.push(novoCodigo);
-                }
-                codigosAtivacao = codigosGerados.join(',');
-            }
 
-            verificarCodigosExistentes(codigosAtivacao, function(codigosExistentes) {
-                if (codigosExistentes.length > 0) {
-                    alert('Os seguintes códigos de ativação já existem e não serão gravados: ' + codigosExistentes.join(', '));
-                    return;
-                }
+                            </div>
+                             
 
-                // Gravar o médico no Firebase
-                database.ref('medicos/' + medicoId).set(novoMedico)
-                    .then(() => {
-                        alert('Médico cadastrado com sucesso!');
-                        document.getElementById('form-medico').reset();
-                        gravarCodigosAtivacao(codigosAtivacao, medicoId); // Gravar os códigos de ativação
+                                <div class="subtitulo-div" style="display: block;">
+                                <h3 class="subtitulo-texto">Dados bancários:</h3>
+                                </div>
 
-                        // Verificar se os cupons de desconto serão gerados automaticamente ou manualmente
-                        if (gerarCodigosDescontoAutomaticamente) {
-                            const cuponsDesconto = gerarCuponsDesconto(); // Gera os cupons automáticos
-                            gravarCuponsDesconto(medicoId, cuponsDesconto);
-                        } else {
-                            // Gravar os cupons de desconto manuais
-                            const cuponsManuais = [];
-                            const camposDesconto = document.querySelectorAll('.desconto-field');
-                            camposDesconto.forEach(campo => {
-                                const codigoDesconto = campo.querySelector('.codigo-desconto').value;
-                                const porcentagemDesconto = campo.querySelector('.porcentagem-desconto').value;
-                                if (codigoDesconto && porcentagemDesconto) {
-                                    cuponsManuais.push({ codigo: codigoDesconto, percentual: porcentagemDesconto + '%' });
-                                }
-                            });
-                            gravarCuponsDesconto(medicoId, cuponsManuais);
-                        }
-                    })
-                    .catch((error) => {
-                        alert('Erro ao cadastrar o médico: ' + error.message);
-                    });
-            });
-        });
+                            <div class="div-dados-bancarios" style="display: block;">
+                               <div class="linha-dados-bancarios">
+                                    <div class="conteudo-linha-duplo">
+                                       <label for="banco-medico">Banco:</label>
+                                       <select id="banco-medico" required>
+                                          <option value="001">001-BANCO DO BRASIL S.A (BB)</option>
+                                          <option value="237">237-BRADESCO S.A</option>
+                                          <option value="335">335-Banco Digio S.A</option>
+                                          <option value="260">260-NU PAGAMENTOS S.A (NUBANK)</option>
+                                          <option value="290">290-Pagseguro Internet S.A (PagBank)</option>
+                                          <option value="380">380-PicPay Servicos S.A.</option>
+                                          <option value="323">323-Mercado Pago - conta do Mercado Livre</option>
+                                          <option value="237">NEXT BANK (UTILIZAR O MESMO CÓDIGO DO BRADESCO)</option>
+                                          <option value="637">BANCO SOFISA S.A (SOFISA DIRETO)</option>
+                                          <option value="077">BANCO INTER S.A</option>
+                                          <option value="341">ITAÚ UNIBANCO S.A</option>
+                                          <option value="104">CAIXA ECONÔMICA FEDERAL (CEF)</option>
+                                          <option value="033">BANCO SANTANDER BRASIL S.A</option>
+                                          <option value="212">BANCO ORIGINAL S.A</option>
+                                          <option value="756">BANCOOB (BANCO COOPERATIVO DO BRASIL)</option>
+                                          <option value="655">BANCO VOTORANTIM S.A</option>
+                                          <option value="655">NEON PAGAMENTOS S.A (OS MESMOS DADOS DO BANCO VOTORANTIM)</option>
+                                          <option value="041">BANRISUL – BANCO DO ESTADO DO RIO GRANDE DO SUL S.A</option>
+                                          <option value="389">BANCO MERCANTIL DO BRASIL S.A</option>
+                                          <option value="422">BANCO SAFRA S.A</option>
+                                          <option value="070">BANCO DE BRASÍLIA (BRB)</option>
+                                          <option value="136">UNICRED COOPERATIVA</option>
+                                          <option value="741">BANCO RIBEIRÃO PRETO</option>
+                                          <option value="739">BANCO CETELEM S.A</option>
+                                          <option value="743">BANCO SEMEAR S.A</option>
+                                          <option value="100">PLANNER CORRETORA DE VALORES S.A</option>
+                                          <option value="096">BANCO B3 S.A</option>
+                                          <option value="747">Banco RABOBANK INTERNACIONAL DO BRASIL S.A</option>
+                                          <option value="748">SICREDI S.A</option>
+                                          <option value="752">BNP PARIBAS BRASIL S.A</option>
+                                          <option value="091">UNICRED CENTRAL RS</option>
+                                          <option value="399">KIRTON BANK</option>
+                                          <option value="108">PORTOCRED S.A</option>
+                                          <option value="757">BANCO KEB HANA DO BRASIL S.A</option>
+                                          <option value="102">XP INVESTIMENTOS S.A</option>
+                                          <option value="348">BANCO XP S/A</option>
+                                          <option value="340">SUPER PAGAMENTOS S/A (SUPERDITAL)</option>
+                                          <option value="364">GERENCIANET PAGAMENTOS DO BRASIL</option>
+                                          <option value="084">UNIPRIME NORTE DO PARANÁ</option>
+                                          <option value="180">CM CAPITAL MARKETS CCTVM LTDA</option>
+                                          <option value="066">BANCO MORGAN STANLEY S.A</option>
+                                          <option value="015">UBS BRASIL CCTVM S.A</option>
+                                          <option value="143">TREVISO CC S.A</option>
+                                          <option value="062">HIPERCARD BM S.A</option>
+                                          <option value="074">BCO. J.SAFRA S.A</option>
+                                          <option value="099">UNIPRIME CENTRAL CCC LTDA</option>
+                                          <option value="025">BANCO ALFA S.A.</option>
+                                          <option value="075">BCO ABN AMRO S.A</option>
+                                          <option value="040">BANCO CARGILL S.A</option>
+                                          <option value="190">SERVICOOP</option>
+                                          <option value="063">BANCO BRADESCARD</option>
+                                          <option value="191">NOVA FUTURA CTVM LTDA</option>
+                                          <option value="064">GOLDMAN SACHS DO BRASIL BM S.A</option>
+                                          <option value="097">CCC NOROESTE BRASILEIRO LTDA</option>
+                                          <option value="016">CCM DESP TRÂNS SC E RS</option>
+                                          <option value="012">BANCO INBURSA</option>
+                                          <option value="003">BANCO DA AMAZONIA S.A</option>
+                                          <option value="060">CONFIDENCE CC S.A</option>
+                                          <option value="037">BANCO DO ESTADO DO PARÁ S.A</option>
+                                          <option value="159">CASA CREDITO S.A</option>
+                                          <option value="172">ALBATROSS CCV S.A</option>
+                                          <option value="085">COOP CENTRAL AILOS</option>
+                                          <option value="114">CENTRAL COOPERATIVA DE CRÉDITO NO ESTADO DO ESPÍRITO SANTO</option>
+                                          <option value="036">BANCO BBI S.A</option>
+                                          <option value="394">BANCO BRADESCO FINANCIAMENTOS S.A</option>
+                                          <option value="004">BANCO DO NORDESTE DO BRASIL S.A.</option>
+                                          <option value="320">BANCO CCB BRASIL S.A</option>
+                                          <option value="189">HS FINANCEIRA</option>
+                                          <option value="105">LECCA CFI S.A</option>
+                                          <option value="076">BANCO KDB BRASIL S.A.</option>
+                                          <option value="082">BANCO TOPÁZIO S.A</option>
+                                          <option value="286">CCR DE OURO</option>
+                                          <option value="093">PÓLOCRED SCMEPP LTDA</option>
+                                          <option value="273">CCR DE SÃO MIGUEL DO OESTE</option>
+                                          <option value="157">ICAP DO BRASIL CTVM LTDA</option>
+                                          <option value="183">SOCRED S.A</option>
+                                          <option value="014">NATIXIS BRASIL S.A</option>
+                                          <option value="130">CARUANA SCFI</option>
+                                          <option value="127">CODEPE CVC S.A</option>
+                                          <option value="079">BANCO ORIGINAL DO AGRONEGÓCIO S.A</option>
+                                          <option value="081">BBN BANCO BRASILEIRO DE NEGOCIOS S.A</option>
+                                          <option value="118">STANDARD CHARTERED BI S.A</option>
+                                          <option value="133">CRESOL CONFEDERAÇÃO</option>
+                                          <option value="121">BANCO AGIBANK S.A</option>
+                                          <option value="083">BANCO DA CHINA BRASIL S.A</option>
+                                          <option value="138">GET MONEY CC LTDA</option>
+                                          <option value="024">BCO BANDEPE S.A</option>
+                                          <option value="095">BANCO CONFIDENCE DE CÂMBIO S.A</option>
+                                          <option value="094">BANCO FINAXIS</option>
+                                          <option value="276">SENFF S.A</option>
+                                          <option value="137">MULTIMONEY CC LTDA</option>
+                                          <option value="092">BRK S.A</option>
+                                          <option value="047">BANCO BCO DO ESTADO DE SERGIPE S.A</option>
+                                          <option value="144">BEXS BANCO DE CAMBIO S.A.</option>
+                                          <option value="126">BR PARTNERS BI</option>
+                                          <option value="301">BPP INSTITUIÇÃO DE PAGAMENTOS S.A</option>
+                                          <option value="173">BRL TRUST DTVM SA</option>
+                                          <option value="119">BANCO WESTERN UNION</option>
+                                          <option value="254">PARANA BANCO S.A</option>
+                                          <option value="268">BARIGUI CH</option>
+                                          <option value="107">BANCO BOCOM BBM S.A</option>
+                                          <option value="412">BANCO CAPITAL S.A</option>
+                                          <option value="124">BANCO WOORI BANK DO BRASIL S.A</option>
+                                          <option value="149">FACTA S.A. CFI</option>
+                                          <option value="197">STONE PAGAMENTOS S.A</option>
+                                          <option value="142">BROKER BRASIL CC LTDA</option>
+                                          <option value="389">BANCO MERCANTIL DO BRASIL S.A.</option>
+                                          <option value="184">BANCO ITAÚ BBA S.A</option>
+                                          <option value="634">BANCO TRIANGULO S.A (BANCO TRIÂNGULO)</option>
+                                          <option value="545">SENSO CCVM S.A</option>
+                                          <option value="132">ICBC DO BRASIL BM S.A</option>
+                                          <option value="298">VIPS CC LTDA</option>
+                                          <option value="129">UBS BRASIL BI S.A</option>
+                                          <option value="128">MS BANK S.A BANCO DE CÂMBIO</option>
+                                          <option value="194">PARMETAL DTVM LTDA</option>
+                                          <option value="310">VORTX DTVM LTDA</option>
+                                          <option value="163">COMMERZBANK BRASIL S.A BANCO MÚLTIPLO</option>
+                                          <option value="280">AVISTA S.A</option>
+                                          <option value="146">GUITTA CC LTDA</option>
+                                          <option value="279">CCR DE PRIMAVERA DO LESTE</option>
+                                          <option value="182">DACASA FINANCEIRA S/A</option>
+                                          <option value="278">GENIAL INVESTIMENTOS CVM S.A</option>
+                                          <option value="271">IB CCTVM LTDA</option>
+                                          <option value="021">BANCO BANESTES S.A</option>
+                                          <option value="246">BANCO ABC BRASIL S.A</option>
+                                          <option value="751">SCOTIABANK BRASIL</option>
+                                          <option value="208">BANCO BTG PACTUAL S.A</option>
+                                          <option value="746">BANCO MODAL S.A</option>
+                                          <option value="241">BANCO CLASSICO S.A</option>
+                                          <option value="612">BANCO GUANABARA S.A</option>
+                                          <option value="604">BANCO INDUSTRIAL DO BRASIL S.A</option>
+                                          <option value="505">BANCO CREDIT SUISSE (BRL) S.A</option>
+                                          <option value="196">BANCO FAIR CC S.A</option>
+                                          <option value="300">BANCO LA NACION ARGENTINA</option>
+                                          <option value="477">CITIBANK N.A</option>
+                                          <option value="266">BANCO CEDULA S.A</option>
+                                          <option value="122">BANCO BRADESCO BERJ S.A</option>
+                                          <option value="376">BANCO J.P. MORGAN S.A</option>
+                                          <option value="473">BANCO CAIXA GERAL BRASIL S.A</option>
+                                          <option value="745">BANCO CITIBANK S.A</option>
+                                          <option value="120">BANCO RODOBENS S.A</option>
+                                          <option value="265">BANCO FATOR S.A</option>
+                                          <option value="007">BNDES (Banco Nacional do Desenvolvimento Social)</option>
+                                          <option value="188">ATIVA S.A INVESTIMENTOS</option>
+                                          <option value="134">BGC LIQUIDEZ DTVM LTDA</option>
+                                          <option value="641">BANCO ALVORADA S.A</option>
+                                          <option value="029">BANCO ITAÚ CONSIGNADO S.A</option>
+                                          <option value="243">BANCO MÁXIMA S.A</option>
+                                          <option value="078">HAITONG BI DO BRASIL S.A</option>
+                                          <option value="111">BANCO OLIVEIRA TRUST DTVM S.A</option>
+                                          <option value="017">BNY MELLON BANCO S.A</option>
+                                          <option value="174">PERNAMBUCANAS FINANC S.A</option>
+                                          <option value="495">LA PROVINCIA BUENOS AIRES BANCO</option>
+                                          <option value="125">BRASIL PLURAL S.A BANCO</option>
+                                          <option value="488">JPMORGAN CHASE BANK</option>
+                                          <option value="065">BANCO ANDBANK S.A</option>
+                                          <option value="492">ING BANK N.V</option>
+                                          <option value="250">BANCO BCV</option>
+                                          <option value="145">LEVYCAM CCV LTDA</option>
+                                          <option value="494">BANCO REP ORIENTAL URUGUAY</option>
+                                          <option value="253">BEXS CC S.A</option>
+                                          <option value="269">HSBC BANCO DE INVESTIMENTO</option>
+                                          <option value="213">BCO ARBI S.A</option>
+                                          <option value="139">INTESA SANPAOLO BRASIL S.A</option>
+                                          <option value="018">BANCO TRICURY S.A</option>
+                                          <option value="630">BANCO INTERCAP S.A</option>
+                                          <option value="224">BANCO FIBRA S.A</option>
+                                          <option value="600">BANCO LUSO BRASILEIRO S.A</option>
+                                          <option value="623">BANCO PAN</option>
+                                          <option value="204">BANCO BRADESCO CARTOES S.A</option>
+                                          <option value="479">BANCO ITAUBANK S.A</option>
+                                          <option value="456">BANCO MUFG BRASIL S.A</option>
+                                          <option value="464">BANCO SUMITOMO MITSUI BRASIL S.A</option>
+                                          <option value="613">OMNI BANCO S.A</option>
+                                          <option value="652">ITAÚ UNIBANCO HOLDING BM S.A</option>
+                                          <option value="653">BANCO INDUSVAL S.A</option>
+                                          <option value="069">BANCO CREFISA S.A</option>
+                                          <option value="370">BANCO MIZUHO S.A</option>
+                                          <option value="249">BANCO INVESTCRED UNIBANCO S.A</option>
+                                          <option value="318">BANCO BMG S.A</option>
+                                          <option value="626">BANCO FICSA S.A</option>
+                                          <option value="270">SAGITUR CC LTDA</option>
+                                          <option value="366">BANCO SOCIETE GENERALE BRASIL</option>
+                                          <option value="113">MAGLIANO S.A</option>
+                                          <option value="131">TULLETT PREBON BRASIL CVC LTDA</option>
+                                          <option value="011">C.SUISSE HEDGING-GRIFFO CV S.A (Credit Suisse)</option>
+                                          <option value="611">BANCO PAULISTA</option>
+                                          <option value="755">BOFA MERRILL LYNCH BM S.A</option>
+                                          <option value="089">CCR REG MOGIANA</option>
+                                          <option value="643">BANCO PINE S.A</option>
+                                          <option value="140">EASYNVEST - TÍTULO CV S.A</option>
+                                          <option value="707">BANCO DAYCOVAL S.A</option>
+                                          <option value="288">CAROL DTVM LTDA</option>
+                                          <option value="101">RENASCENCA DTVM LTDA</option>
+                                          <option value="487">DEUTSCHE BANK S.A BANCO ALEMÃO</option>
+                                          <option value="233">BANCO CIFRA</option>
+                                          <option value="177">GUIDE</option>
+                                          <option value="633">BANCO RENDIMENTO S.A</option>
+                                          <option value="218">BANCO BS2 S.A</option>
+                                          <option value="292">BS2 DISTRIBUIDORA DE TÍTULOS E INVESTIMENTOS</option>
+                                          <option value="169">BANCO OLÉ BONSUCESSO CONSIGNADO S.A</option>
+                                          <option value="293">LASTRO RDV DTVM LTDA</option>
+                                          <option value="285">FRENTE CC LTDA</option>
+                                          <option value="080">B&T CC LTDA</option>
+                                          <option value="753">NOVO BANCO CONTINENTAL S.A BM</option>
+                                          <option value="222">BANCO CRÉDIT AGRICOLE BR S.A</option>
+                                          <option value="754">BANCO SISTEMA</option>
+                                          <option value="098">CREDIALIANÇA CCR</option>
+                                          <option value="610">BANCO VR S.A</option>
+                                          <option value="712">BANCO OURINVEST S.A</option>
+                                          <option value="010">CREDICOAMO</option>
+                                          <option value="283">RB CAPITAL INVESTIMENTOS DTVM LTDA</option>
+                                          <option value="217">BANCO JOHN DEERE S.A</option>
+                                          <option value="117">ADVANCED CC LTDA</option>
+                                          <option value="336">BANCO C6 S.A - C6 BANK</option>
+                                          <option value="654">BANCO DIGIMAIS S.A</option>
+                                       </select>
+                                    </div>
+                                 
+                                    <div class="conteudo-linha">
+                                        <label for="agencia-medico">Agência:</label>
+                                        <input type="text" id="agencia-medico" placeholder="Agência" required><br>
+                                    </div>
 
-    </script>
+                                    <div class="conteudo-linha">
+                                        <label for="agencia-medico">Conta:</label>
+                                        <input type="text" id="agencia-medico" placeholder="Conta" required><br>
+                                    </div>
+
+                                    <div class="conteudo-linha">
+                                        <label for="tipo-conta">Tipo de conta:</label>
+                                        <select id="tipo-conta" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="PF">Pessoa Física</option>
+                                        <option value="PJ">Pessoa Jurídica</option>
+                                        </select><br>
+                                        
+                                    </div>
+                                    <div class="conteudo-linha">
+                                        <label for="tipo-conta">Tipo de conta:</label>
+                                        <select id="tipo-conta" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="PF">Pessoa Física</option>
+                                        <option value="PJ">Pessoa Jurídica</option>
+                                        </select><br>
+                                        
+                                    </div>
+                                
+                                </div>
+                                  
+                                
+                                    <div class="linha-dados-bancarios">
+                                        <div class="conteudo-linha-quadruplo">
+                                                <label for="observacao">Observações:</label>
+                                                <textarea id="observacao" rows="4" placeholder="Digite aqui as observações"></textarea>    
+                                        </div>
+                                    </div>
+
+                                    <div class="check-conta">       
+                                        <div class="lb-dados-bancarios">
+                                            <input type="checkbox" id="dados-bancarios-iguais" checked>
+                                            <label  for="check-conta">Os dados do responsável pela conta e os dados do médico são identicos.
+                                            </label>    
+                                        </div>
+                                    </div> 
+                                
+                                    
+                                 
+                                 
+                                 
+                                    <div class="subtitulo-div" style="">
+                                        <h3 class="subtitulo-texto">Dados do responsável:</h3>
+                                    </div>
+                                    <div class="linha-dados-bancarios-responsavel">
+                                        <div class="conteudo-linha-quadruplo">
+                                             
+                                        </div>
+                                        <div class="conteudo-linha-duplo">                                 
+                                            <label for="nome-medico">Nome:</label>
+                                            <input type="text" id="nome-medico2" placeholder="Digite o nome do médico" required><br>
+                                       </div>
+
+                                        <div class="conteudo-linha-duplo">
+                                            <label for="cpf-medico">CPF:</label>
+                                            <input type="text" id="cpf-medico-responsavel" placeholder="Digite o CPF do médico" required><br>
+                                        </div>
+        
+                                        
+        
+                                           <div class="conteudo-linha-duplo">
+                                            <label for="data-nascimento-medico">Data de Nascimento:</label>
+                                            <input type="date" id="data-nascimento-medico" required><br>
+                                           </div>  
+        
+                                    </div>
+                                
+
+                                    
+
+
+                                    
+                                
+                                
+                            </div> 
+
+
+
+                            <button type="submit">Cadastrar Médico</button>
+
+                        </div>
+                        
+                    </div>
+                
+                
+                
+         
+                
+                
+                
+                
+                
+                
+                
+               
+               
+               
+               
+               
+                
+               
+               
+            </form>
+        </div>
+    </div>
+    
+
+    <script src="script.js"></script>
 </body>
 </html>

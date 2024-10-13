@@ -1,0 +1,206 @@
+
+
+/* Modal styles */
+
+
+.modal {
+    display: none; /* Oculta o modal inicialmente */
+    position: fixed; /* Mantém o modal fixo na tela */
+    z-index: 1000; /* Coloca o modal acima de outros elementos */
+    left: 50%; /* Centraliza horizontalmente */
+    top: 50%; /* Centraliza verticalmente */
+    transform: translate(-50%, -50%); /* Ajusta a posição para o centro */
+    width: 100%; /* Largura total da tela */
+    height: 100%; /* Altura total da tela */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra para o modal */
+    background-color: rgba(6, 47, 81, 0.5); /* Fundo semi-transparente */
+   
+    
+}
+
+.modal-content {
+    background-color: #fff;
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
+    height: 95%;
+    padding-top: 10;
+    
+    
+    border: 2px solid #1dd0e7;
+    max-width: 100%;
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    overflow-y: auto; /* Adiciona rolagem vertical */
+}
+/* Estilo para a scrollbar do modal-content */
+.modal-content::-webkit-scrollbar {
+    width: 12px; /* Largura da scrollbar */
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Cor do track da scrollbar */
+    border-radius: 10px; /* Bordas arredondadas */
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #1dd0e7; /* Cor do thumb da scrollbar */
+    border-radius: 10px; /* Bordas arredondadas */
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #1a9cb7; /* Cor do thumb da scrollbar quando hover */
+}
+
+.modal-validation {
+    display: none; /* Oculta o modal inicialmente */
+    position: fixed; /* Mantém o modal fixo na tela */
+    z-index: 1000; /* Coloca o modal acima de outros elementos */
+    left: 53%; /* Centraliza horizontalmente */
+    top: 50%; /* Centraliza verticalmente */
+    transform: translate(-50%, -50%); /* Ajusta a posição para o centro */
+    width: 30%; /* Largura total da tela */
+    height: 30%; /* Altura total da tela */
+   background-color: #0084ff00;
+   
+    
+} 
+
+.modal-content-cpf.validando {
+    background-color: #6bdaf69d;
+    color: #515356;
+    font-style: bold;
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
+    height: 250px;
+    padding-top: 10;
+    border: 4px solid #1dd0e7;
+    max-width: 250px;
+    position: relative;
+    border-radius: 250px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    backdrop-filter: blur(1px); /* Aplica o efeito de blur */
+    -webkit-backdrop-filter: blur(10px); /* Suporte para Safari */
+    
+}
+.modal-content-cpf.valid {
+    background-color: rgba(0, 255, 60, 0.1);
+    color: #515356;
+    font-style: bold;
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
+    height: 250px;
+    padding-top: 10;
+    border: 4px solid #00ff3c;
+    max-width: 250px;
+    position: relative;
+    border-radius: 250px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    backdrop-filter: blur(1px); /* Aplica o efeito de blur */
+    -webkit-backdrop-filter: blur(10px); /* Suporte para Safari */    
+}
+.modal-content-cpf.invalid {
+    background-color: #f6726b9d;
+    color: #515356;
+    font-style: bold;
+    margin-top: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
+    height: 250px;
+    padding-top: 10;
+    border: 4px solid #e71d1d;
+    max-width: 250px;
+    position: relative;
+    border-radius: 250px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    backdrop-filter: blur(1px); /* Aplica o efeito de blur */
+    -webkit-backdrop-filter: blur(10px); /* Suporte para Safari */
+    
+}
+
+
+.loader {
+    transform: rotateZ(45deg);
+    position: inherit;
+    margin-top: 20%;
+    margin-left: 28%;
+    padding-bottom: 25px;
+    perspective: 1000px;
+    border-radius: 50%;
+    width: 100px;
+    
+    height: 100px;
+    color: #fff;
+  }
+    .loader:before,
+    .loader:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: inherit;
+      height: inherit;
+      border-radius: 50%;
+      transform: rotateX(70deg);
+      animation: 1s spin linear infinite;
+    }
+    .loader:after {
+      color: #0084ff;
+      transform: rotateY(70deg);
+      animation-delay: .4s;
+    }
+
+  @keyframes rotate {
+    0% {
+      transform: translate(-50%, -50%) rotateZ(0deg);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotateZ(360deg);
+    }
+  }
+
+  @keyframes rotateccw {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(-360deg);
+    }
+  }
+
+  @keyframes spin {
+    0%,
+    100% {
+      box-shadow: .2em 0px 0 0px currentcolor;
+    }
+    12% {
+      box-shadow: .2em .2em 0 0 currentcolor;
+    }
+    25% {
+      box-shadow: 0 .2em 0 0px currentcolor;
+    }
+    37% {
+      box-shadow: -.2em .2em 0 0 currentcolor;
+    }
+    50% {
+      box-shadow: -.2em 0 0 0 currentcolor;
+    }
+    62% {
+      box-shadow: -.2em -.2em 0 0 currentcolor;
+    }
+    75% {
+      box-shadow: 0px -.2em 0 0 currentcolor;
+    }
+    87% {
+      box-shadow: .2em -.2em 0 0 currentcolor;
+    }
+  }
+

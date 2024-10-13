@@ -1,0 +1,886 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+@import url('modal-styles.css');
+
+
+/* Estilos principais do painel */
+body {
+    font-family: 'Montserrat', sans-serif; /* Alterado para a fonte desejada */
+    background-color: #f5f5f5; /* Cor de fundo */
+    margin: 0;
+    padding: 0;
+    color: #333; /* Cor do texto */
+}
+
+.dashboard-container {
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #1dd0e7; /* Cor lateral */
+    color: #fff;
+    padding: 20px;
+    height: 100vh;
+    box-sizing: border-box;
+    position: fixed; /* Sidebar fixa */
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.nav-links {
+    list-style-type: none;
+    padding: 0;
+}
+
+.nav-links li {
+    margin: 15px 0;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    border-radius: 5px; /* Bordas arredondadas */
+}
+
+.nav-links a:hover {
+    background-color: #15b6d5; /* Efeito hover */
+    transition: 0.3s;
+}
+
+.main-content {
+    flex-grow: 1;
+    margin-left: 270px; /* Espaço para a sidebar */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.header {
+    background-color: #333; /* Cor do cabeçalho */
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+.card button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff; /* Cor do botão */
+    color: #fff;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.card button:hover {
+    background-color: #0056b3; /* Efeito hover no botão */
+}
+
+
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #aaa;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.colunas-container {
+   
+    padding-left: 20px;
+    padding-right: 20px;
+    gap: 20px; /* Espaço entre as colunas */
+}
+
+
+
+/* Aqui está a correção: usamos grid ao invés de flex */
+.linha {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Máximo de 4 inputs por linha */
+    grid-template-rows: auto auto auto auto; /* Define cada linha para ter um comportamento diferente */
+    gap: 0px; /* Espaço entre os itens */
+    margin-top: 0px;
+    background-color: #ffffff; /* Cor de fundo */
+    border: 1px solid #1dd0e7;
+    border-radius: 10px;
+   
+}
+
+.linha-dados-bancarios {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* Máximo de 4 inputs por linha */
+    grid-template-rows: auto auto auto auto; /* Define cada linha para ter um comportamento diferente */
+    gap: 0px; /* Espaço entre os itens */
+    margin-top: 0px;
+    background-color: #ffffff00; /* Cor de fundo */
+    grid-row: 1; /* Aplica esse estilo apenas à segunda linha */
+    grid-column: span 5; /* Isso faz com que o item ocupe todas as colunas na segunda linha */
+    width: 100%x; /* Define uma altura específica para a linha 2 */
+    padding-left: 10px;
+    padding-right: 10px;
+    overflow: hidden; /* Evita que o conteúdo ultrapasse o contêiner */
+}
+.div-dados-bancarios{
+    border: 1px solid #1dd0e7;
+    border-radius: 10px;
+    padding-top: 10px;
+    
+}
+
+.linha-dados-bancarios-responsavel {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* Máximo de 4 inputs por linha */
+    grid-template-rows: auto auto auto auto; /* Define cada linha para ter um comportamento diferente */
+    gap: 0px; /* Espaço entre os itens */
+    margin-top: 0px;
+    background-color: #ffffff00; /* Cor de fundo */
+    grid-row: 1; /* Aplica esse estilo apenas à segunda linha */
+    grid-column: span 5; /* Isso faz com que o item ocupe todas as colunas na segunda linha */
+    width: 100%x; /* Define uma altura específica para a linha 2 */
+    overflow: hidden; /* Evita que o conteúdo ultrapasse o contêiner */
+    padding: 10px;
+    margin-top: -30px;
+}
+
+
+
+.conteudo-linha {
+    margin-bottom: 5px; /* Ajuste conforme necessário para a distância vertical */
+    padding: 5px; 
+    text-align: left;
+    border-radius: 10px;
+ 
+    
+}
+.conteudo-linha-duplo {
+    margin-bottom: 5px; /* Ajuste conforme necessário para a distância vertical */
+    padding: 5px; 
+    text-align: left;
+    border-radius: 10px;
+    grid-column: span 2; /* O item vai ocupar 2 colunas */
+    grid-row: span 2; /* O item vai ocupar 2 linhas */
+    
+}
+
+.conteudo-linha-quadruplo {
+    margin-bottom: 5px; /* Ajuste conforme necessário para a distância vertical */
+    padding: 5px; 
+    text-align: left;
+    border-radius: 10px;
+    grid-column: span 6; /* O item vai ocupar 2 colunas */
+    grid-row: span 2; /* O item vai ocupar 2 linhas */
+    
+}
+
+.conteudo-linha-quadruplo-obs-pessoal {
+    margin-bottom: 5px; /* Ajuste conforme necessário para a distância vertical */
+    padding: 5px; 
+    text-align: left;
+    border-radius: 10px;
+    grid-column: span 4; /* O item vai ocupar 2 colunas */
+    grid-row: span 2; /* O item vai ocupar 2 linhas */
+    
+}
+.conteudo-linha-quadruplo-obs-pessoal label {
+    color: #1dd0e7;
+    margin-left: 15px;
+    font-weight: bold; /* Deixa o texto do label mais destacado */
+    font-size: 0.8rem; /* Tamanho da fonte do subtítulo */
+}
+
+
+.conteudo-linha-quadruplo-obs-pessoal textarea  {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%; /* Ajustado para ocupar 100% do espaço disponível */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+    padding: 10px;
+    
+    margin-bottom: 0px; /* Remova a margem inferior dos inputs */
+    border: 1px solid #1dd0e7;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Adiciona transição suave */
+    align-items: flex-start; /* Alinha o texto ao topo */
+    padding-top: 10px; /* Ajuste conforme necessário */
+    line-height: 1.2; /* Ajuste conforme necessário */
+}
+
+
+.conteudo-linha-dados-responsavel {
+    margin-bottom: 5px; /* Ajuste conforme necessário para a distância vertical */
+    padding: 5px; 
+    text-align: left;
+    border-radius: 10px;
+    grid-column: span 4; /* O item vai ocupar 2 colunas */
+    grid-row: span 2; /* O item vai ocupar 2 linhas */
+    
+}
+.conteudo-linha-dados-responsavel input {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%; /* Ajustado para ocupar 100% do espaço disponível */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+    padding: 10px;
+    
+    margin-bottom: 0px; /* Remova a margem inferior dos inputs */
+    border: 1px solid #1dd0e7;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Adiciona transição suave */
+    align-items: flex-start; /* Alinha o texto ao topo */
+    padding-top: 10px; /* Ajuste conforme necessário */
+    line-height: 1.2; /* Ajuste conforme necessário */
+}
+
+.conteudo-linha-dados-responsavel label {
+    color: #1dd0e7;
+    margin-left: 15px;
+    font-weight: bold; /* Deixa o texto do label mais destacado */
+    font-size: 0.8rem; /* Tamanho da fonte do subtítulo */
+}
+ .check-conta{
+    margin-left: 5.5%;
+
+}
+
+.conteudo-linha-quadruplo input,
+.conteudo-linha-quadruplo textarea  {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%; /* Ajustado para ocupar 100% do espaço disponível */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+    padding: 10px;
+    
+    margin-bottom: 0px; /* Remova a margem inferior dos inputs */
+    border: 1px solid #1dd0e7;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Adiciona transição suave */
+    align-items: flex-start; /* Alinha o texto ao topo */
+    padding-top: 10px; /* Ajuste conforme necessário */
+    line-height: 1.2; /* Ajuste conforme necessário */
+}
+
+.conteudo-linha-quadruplo label {
+    color: #1dd0e7;
+    margin-left: 15px;
+    font-weight: bold; /* Deixa o texto do label mais destacado */
+    font-size: 0.8rem; /* Tamanho da fonte do subtítulo */
+}
+
+
+.conteudo-linha-duplo label {
+    color: #1dd0e7;
+    margin-left: 5%;
+    font-weight: bold; /* Deixa o texto do label mais destacado */
+    font-size: 0.8rem; /* Tamanho da fonte do subtítulo */
+}
+
+.conteudo-linha-duplo select,
+.conteudo-linha-duplo input {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%; /* Ajustado para ocupar 100% do espaço disponível */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+    padding: 10px;
+    margin-bottom: 0px; /* Remova a margem inferior dos inputs */
+    border: 1px solid #1dd0e7;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Adiciona transição suave */
+}
+
+.conteudo-linha input,
+.conteudo-linha select {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%; /* Ajustado para ocupar 100% do espaço disponível */
+   
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+    padding:  10px;
+    margin-bottom: 0px; /* Remova a margem inferior dos inputs */
+    border: 1px solid #1dd0e7;
+    border-radius: 25px;
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Adiciona transição suave */
+}
+
+.conteudo-linha input:hover,
+.conteudo-linha select:hover {
+    background-color: rgba(255, 255, 255, 0.8); /* Cor de fundo esbranquiçada */
+    border-color: #a3e4f1; /* Borda mais clara */
+}
+
+
+
+.conteudo-linha label {
+    color: #1dd0e7;
+    margin-left: 5%;
+    font-weight: bold; /* Deixa o texto do label mais destacado */
+    font-size: 0.8rem; /* Tamanho da fonte do subtítulo */
+}
+
+.subtitulo-div {
+    color: #333; /* Cor do texto */
+    background-color: #ffffff; /* Cor de fundo */
+}
+
+.subtitulo-texto {
+    color: #1dd0e7;
+    margin-left: 30px;
+    font-size: 1.0rem; /* Tamanho da fonte do subtítulo */
+    text-align: left;
+}
+
+
+.input-crm {
+    width: 100px; /* Ajuste conforme necessário */
+}
+ .input-crm.valid {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+   
+}
+.input-crm.valid:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+
+.select-crm.valid {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.select-crm.valid:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+
+
+
+.especialidade-medico.valid {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.especialidade-medico.valid:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+
+
+
+.cpf-medico.valid {
+    border-color: #fdf501f7; /* Cor da borda esverdeada */
+}
+.cpf-medico.valid:hover {
+    background-color: rgba(255, 145, 0, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #fdf501f7; /* Borda esverdeada */
+}
+.cpf-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.cpf-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+.cpf-medico.validado {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.cpf-medico.validado:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+
+
+.nome-medico {
+    border-color: #1dd0e7; /* Cor da borda esverdeada */
+}
+.nome-medico:hover {
+    background-color: rgba(255, 255, 255, 0.8); /* Cor de fundo esbranquiçada */
+    border-color: #a3e4f1; /* Borda mais clara */    
+}
+
+.nome-medico.valid {
+    border-color: #fdf501f7; /* Cor da borda esverdeada */
+}
+.nome-medico.valid:hover {
+    background-color: rgba(255, 145, 0, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #fdf501f7; /* Borda esverdeada */
+}
+.nome-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.nome-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+.nome-medico.validado {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.nome-medico.validado:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+
+
+.data-nascimento-medico {
+    border-color: #1dd0e7; /* Cor da borda esverdeada */
+}
+.data-nascimento-medico:hover {
+    background-color: rgba(255, 255, 255, 0.8); /* Cor de fundo esbranquiçada */
+    border-color: #a3e4f1; /* Borda mais clara */    
+}
+
+.data-nascimento-medico.valid {
+    border-color: #fdf501f7; /* Cor da borda esverdeada */
+}
+.data-nascimento-medico.valid:hover {
+    background-color: rgba(255, 145, 0, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #fdf501f7; /* Borda esverdeada */
+}
+.data-nascimento-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.data-nascimento-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+.data-nascimento-medico.validado {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.data-nascimento-medico.validado:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+
+.sexo-medico {
+    border-color: #1dd0e7; /* Cor da borda esverdeada */
+}
+.sexo-medico:hover {
+    background-color: rgba(255, 255, 255, 0.8); /* Cor de fundo esbranquiçada */
+    border-color: #a3e4f1; /* Borda mais clara */    
+}
+
+.sexo-medico.valid {
+    border-color: #fdf501f7; /* Cor da borda esverdeada */
+}
+.sexo-medico.valid:hover {
+    background-color: rgba(255, 145, 0, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #fdf501f7; /* Borda esverdeada */
+}
+.sexo-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.sexo-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+.sexo-medico.validado {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.sexo-medico.validado:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+
+
+.email-medico.valid {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.email-medico.valid:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+.email-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.email-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+
+.telefone-celular-medico.valid {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.telefone-celular-medico.valid:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+.telefone-celular-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.telefone-celular-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+
+.telefone-fixo-medico.valid {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.telefone-fixo-medico.valid:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+.telefone-fixo-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.telefone-fixo-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+
+/*#region The switch - the box around the slider */
+
+
+.cep-medico.valid {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.cep-medico.valid:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+.cep-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.cep-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+
+
+
+.rua-medico.valid {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.rua-medico.valid:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+.rua-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.rua-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+
+.bairro-medico.valid {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.bairro-medico.valid:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+.bairro-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.bairro-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+
+
+
+
+
+.cidade-medico.valid {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.cidade-medico.valid:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+.cidade-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.cidade-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+
+
+.estado-medico.valid {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.estado-medico.valid:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+.estado-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.estado-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+
+.numero-medico.valid {
+    border-color: #00ff3c; /* Cor da borda esverdeada */
+}
+.numero-medico.valid:hover {
+    background-color: rgba(0, 255, 60, 0.1); /* Cor de fundo esverdeada clara */
+    border-color: #00ff3c; /* Borda esverdeada */
+}
+.numero-medico.invalid {
+    border-color: #b20000; /* Cor da borda esverdeada */
+}
+.numero-medico.invalid:hover {
+    background-color: rgba(255, 21, 0, 0.46); /* Cor de fundo esverdeada clara */
+    border-color: #b20000; /* Borda esverdeada */
+}
+
+/*#endregion */
+
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    margin-top: 25px;
+    width: 48px;
+    height: 20px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.lb-dados-bancarios{
+    color: #1dd0e7;
+    font-weight: bold; /* Deixa o texto do label mais destacado */
+    font-size: 0.8rem; 
+   
+   
+    width: 600px;
+    max-width: 600px;
+    text-align: justify;
+ 
+
+}
+.check-conta{
+   margin-left: 5.5%;
+   
+
+}
+
+
+
+button {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-primary {
+    background-color: #007bff; /* Cor do botão primário */
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #28a745; /* Cor do botão secundário */
+    color: #fff;
+}
+
+.btn-tertiary {
+    background-color: #ffc107; /* Cor do botão terciário */
+    color: #fff;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+table th {
+    background-color: #43d5cb; /* Cor do cabeçalho da tabela */
+    color: #fff;
+}
+
+table tr:hover {
+    background-color: #f1f1f1; /* Efeito hover nas linhas da tabela */
+}
+
+table td a {
+    color: #1dd0e7; /* Cor dos links na tabela */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+table td a:hover {
+    text-decoration: underline; /* Efeito hover nos links */
+}
+
+.filtros {
+    margin-bottom: 20px;
+}
+
+.filtros input {
+    margin-right: 10px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 200px;
+}
+
+/* Estilo básico para o select */
+select {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%; /* Ajustado para ocupar 100% do espaço disponível */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #1dd0e7;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    background-color: #fff;
+    color: #333;
+    appearance: none; /* Remove a aparência padrão do select */
+    -webkit-appearance: none; /* Remove a aparência padrão do select no Safari */
+    -moz-appearance: none; /* Remove a aparência padrão do select no Firefox */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="%231dd0e7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><path d="M6 9l6 6 6-6"/></svg>'); /* Ícone de seta virada para baixo */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px 16px;
+}
+
+/* Estilo para as opções do select */
+select option {
+    padding: 10px;
+    background-color: #fff;
+    color: #333;
+}
+
+/* Estilo para o select quando focado */
+select:focus {
+    border-color: #1a9cb7;
+    outline: none;
+}
+
+/* Estilo para o select quando hover */
+select:hover {
+    border-color: #1a9cb7;
+}
+
+/* Estilo para o select quando hover */
+select:hover {
+    border-color: #1a9cb7;
+}
+
+/* Estilo para a scrollbar do select */
+select::-webkit-scrollbar {
+    width: 12px; /* Largura da scrollbar */
+}
+
+select::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Cor do track da scrollbar */
+    border-radius: 10px; /* Bordas arredondadas */
+}
+
+select::-webkit-scrollbar-thumb {
+    background: #1dd0e7; /* Cor do thumb da scrollbar */
+    border-radius: 10px; /* Bordas arredondadas */
+}
+
+select::-webkit-scrollbar-thumb:hover {
+    background: #1a9cb7; /* Cor do thumb da scrollbar quando hover */
+}
